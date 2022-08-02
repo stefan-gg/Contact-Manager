@@ -1,4 +1,4 @@
-package com.ing.contactmanager.entity;
+package com.ing.contactmanager.entities;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +10,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "contact_type")
+@Table(name = "contact_types")
 public class ContactType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "type_id", nullable = false)
-    private Integer id;
+    private Integer typeId;
 
-    @Lob
     @Column(name = "type_name", nullable = false)
     private String typeName;
 }
