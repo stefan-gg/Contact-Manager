@@ -27,4 +27,11 @@ public class User {
 
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @Column(name = "created", nullable = false)
+    private Boolean boolCreated;
+
+    @Column(name = "updated", nullable = false)
+    private Boolean boolUpdated;
+
 }

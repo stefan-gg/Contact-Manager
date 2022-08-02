@@ -30,6 +30,12 @@ public class Contact {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "created", nullable = false)
+    private Boolean boolCreated;
+
+    @Column(name = "updated", nullable = false)
+    private Boolean boolUpdated;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
