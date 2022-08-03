@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/contact_type")
+@RequestMapping("/contact_types")
 public class ContactTypeController {
 
     private final CRUDService<ContactType> contactTypeService;
