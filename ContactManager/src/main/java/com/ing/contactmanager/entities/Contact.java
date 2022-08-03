@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -15,32 +16,38 @@ public class Contact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contact_id", nullable = false)
-    private Integer contactId;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
 
-    @Column(name = "info", nullable = false)
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastName;
+
+    @Column(name = "info", nullable = false, length = 100)
     private String info;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "address", nullable = false, length = 100)
+    private String address;
+
+    @Column(name = "phone_number", nullable = false, length = 50)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "created", nullable = false)
-    private Boolean boolCreated;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated", nullable = false)
-    private Boolean boolUpdated;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "type_id", nullable = false)
+    @JoinColumn(name = "contact_type_id", nullable = false)
     private ContactType contactType;
 }

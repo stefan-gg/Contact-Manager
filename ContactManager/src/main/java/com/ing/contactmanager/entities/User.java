@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -16,22 +18,30 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name = "username", nullable = false)
-    private String username;
+    @OneToMany(mappedBy = "user")
+    private Set<Contact> contacts;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
+
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastName;
+
+    @Column(name = "role", nullable = false, length = 20)
     private Role role;
 
-    @Column(name = "created", nullable = false)
-    private Boolean boolCreated;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated", nullable = false)
-    private Boolean boolUpdated;
-
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }

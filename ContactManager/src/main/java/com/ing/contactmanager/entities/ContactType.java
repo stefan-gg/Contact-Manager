@@ -15,9 +15,9 @@ public class ContactType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "type_id", nullable = false)
-    private Integer typeId;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name = "type_name", nullable = false)
-    private String typeName;
+    @Column(name = "contact_type_name", nullable = false, length = 50)
+    private String contactTypeName;
 }
