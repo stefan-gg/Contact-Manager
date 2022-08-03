@@ -1,25 +1,29 @@
 CREATE TABLE "users" (
-                        "user_id" SERIAL PRIMARY KEY,
-                        "username" varchar NOT NULL,
-                        "password" varchar NOT NULL,
-                        "role" varchar NOT NULL
+                        "id" SERIAL PRIMARY KEY,
+                        "email" varchar(100) NOT NULL,
+                        "password" varchar(255) NOT NULL,
+                        "first_name" varchar(50) NOT NULL,
+                        "last_name" varchar(50) NOT NULL,
+                        "role" varchar(20) NOT NULL
 );
 
 CREATE TABLE "contacts" (
-                           "contact_id" SERIAL PRIMARY KEY,
-                           "name" varchar NOT NULL,
-                           "info" varchar NOT NULL,
-                           "phone_number" varchar NOT NULL,
-                           "email" varchar NOT NULL,
+                           "id" SERIAL PRIMARY KEY,
+                           "first_name" varchar(50) NOT NULL,
+                           "last_name" varchar(50) NOT NULL,
+                           "info" varchar(100),
+                           "address" varchar(100),
+                           "phone_number" varchar(50) NOT NULL,
+                           "email" varchar(100) NOT NULL,
                            "user_id" int NOT NULL,
-                           "type_id" int NOT NULL
+                           "contact_type_id" int NOT NULL
 );
 
 CREATE TABLE "contact_types" (
-                                "type_id" SERIAL PRIMARY KEY,
-                                "type_name" varchar NOT NULL
+                                "id" SERIAL PRIMARY KEY,
+                                "contact_type_name" varchar(50) NOT NULL
 );
 
-ALTER TABLE "contacts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+ALTER TABLE "contacts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "contacts" ADD FOREIGN KEY ("type_id") REFERENCES "contact_types" ("type_id");
+ALTER TABLE "contacts" ADD FOREIGN KEY ("contact_type_id") REFERENCES "contact_types" ("id");

@@ -1,7 +1,7 @@
 ALTER TABLE users
-    ADD COLUMN updated BOOLEAN NOT NULL,
-    ADD COLUMN created BOOLEAN NOT NULL;
+    ADD COLUMN updated_at TIMESTAMP,
+    ADD COLUMN created_at TIMESTAMP;
 
 ALTER TABLE contacts
-    ADD COLUMN updated BOOLEAN NOT NULL,
-    ADD COLUMN created BOOLEAN NOT NULL;
+    ADD COLUMN updated_at TIMESTAMP,
+    ADD COLUMN created_at TIMESTAMP;
