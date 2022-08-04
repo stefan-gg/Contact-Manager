@@ -36,6 +36,5 @@ public class UserMapService {
         userDTO.setUpdatedAt(user.getUpdatedAt());
 
         return userDTO;
-    }
-
+    };
 }
