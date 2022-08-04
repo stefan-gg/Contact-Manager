@@ -1,5 +1,6 @@
 package com.ing.contactmanager.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,10 +21,10 @@ public class ContactType {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-
     @Column(name = "uid")
     private UUID uid;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "contactType")
     private Set<Contact> contacts;
 

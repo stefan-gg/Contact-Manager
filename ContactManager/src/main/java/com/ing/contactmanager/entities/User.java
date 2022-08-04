@@ -1,5 +1,6 @@
 package com.ing.contactmanager.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ing.contactmanager.entities.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class User {
     @Column(name = "uid")
     private UUID uid;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Contact> contacts;
 

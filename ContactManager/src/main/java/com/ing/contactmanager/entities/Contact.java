@@ -22,7 +22,6 @@ public class Contact {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-
     @Column(name = "uid")
     private UUID uid;
 
