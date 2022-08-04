@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,13 +16,13 @@ public class UserServiceImpl implements CRUDService<User> {
     private final UserRepository userRepository;
 
     @Override
-    public void deleteById(Integer id) {
-        userRepository.deleteById(id);
+    public void deleteByUuid(UUID uuid) {
+        userRepository.deleteByUuid(uuid);
     }
 
     @Override
-    public User getById(Integer id) {
-        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
+    public User getByUuid(UUID uuid) {
+        return userRepository.findByUuid(uuid);//.orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
     }
 
     @Override
@@ -32,6 +32,6 @@ public class UserServiceImpl implements CRUDService<User> {
 
     @Override
     public List<User> getAll() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByLastNameAsc();
     }
 }

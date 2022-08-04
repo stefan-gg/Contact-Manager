@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,6 +20,13 @@ public class ContactType {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "contact_type_name", nullable = false, length = 50)
+
+    @Column(name = "uid")
+    private UUID uid;
+
+    @OneToMany(mappedBy = "contactType")
+    private Set<Contact> contacts;
+
+    @Column(name = "contact_type_name", nullable = false, length = 50, unique = true)
     private String contactTypeName;
 }

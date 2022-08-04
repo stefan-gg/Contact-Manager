@@ -4,10 +4,10 @@ import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +23,7 @@ public class ContactController {
 
     @PostMapping
     public ResponseEntity<Contact> save(@RequestBody Contact contact){
+        contact.setUid(UUID.randomUUID());
         return ResponseEntity.ok(contactService.createOrUpdate(contact));
     }
 
@@ -31,13 +32,13 @@ public class ContactController {
         return ResponseEntity.ok(contactService.createOrUpdate(contact));
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
-        contactService.deleteById(id);
+    @DeleteMapping("/{uuid}")
+    public void delete(@PathVariable UUID uuid){
+        contactService.deleteByUuid(uuid);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Contact> getById(@PathVariable Integer id){
-        return ResponseEntity.ok(contactService.getById(id));
+    @GetMapping("/{uuid}")
+    public ResponseEntity<Contact> getById(@PathVariable UUID uuid){
+        return ResponseEntity.ok(contactService.getByUuid(uuid));
     }
 }

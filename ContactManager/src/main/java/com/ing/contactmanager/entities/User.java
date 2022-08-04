@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -23,10 +24,14 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+
+    @Column(name = "uid")
+    private UUID uid;
+
     @OneToMany(mappedBy = "user")
     private Set<Contact> contacts;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
     @Column(name = "password", nullable = false, length = 255)
@@ -38,6 +43,7 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
     private Role role;
 

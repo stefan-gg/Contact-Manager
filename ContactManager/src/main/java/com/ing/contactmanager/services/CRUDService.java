@@ -1,13 +1,12 @@
 package com.ing.contactmanager.services;
 
-import com.ing.contactmanager.entities.Contact;
-
 import java.util.List;
+import java.util.UUID;
 
 public interface CRUDService<T> {
-    void deleteById(Integer id);
+    void deleteByUuid(UUID uuid);
 
-    T getById(Integer id);
+    T getByUuid(UUID uuid);
 
     T createOrUpdate(T object);
 

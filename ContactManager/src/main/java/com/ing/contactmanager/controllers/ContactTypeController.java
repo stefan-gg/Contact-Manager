@@ -3,12 +3,11 @@ package com.ing.contactmanager.controllers;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,6 +23,7 @@ public class ContactTypeController {
 
     @PostMapping
     public ResponseEntity<ContactType> save(@RequestBody ContactType contactType){
+        contactType.setUid(UUID.randomUUID());
         return ResponseEntity.ok(contactTypeService.createOrUpdate(contactType));
     }
 
@@ -32,13 +32,13 @@ public class ContactTypeController {
         return ResponseEntity.ok(contactTypeService.createOrUpdate(contactType));
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Integer id){
-        contactTypeService.deleteById(id);
+    @DeleteMapping("/{uuid}")
+    public void deleteById(@PathVariable UUID uuid){
+        contactTypeService.deleteByUuid(uuid);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ContactType> getById(@PathVariable Integer id){
-        return ResponseEntity.ok(contactTypeService.getById(id));
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ContactType> getById(@PathVariable UUID uuid){
+        return ResponseEntity.ok(contactTypeService.getByUuid(uuid));
     }
 }

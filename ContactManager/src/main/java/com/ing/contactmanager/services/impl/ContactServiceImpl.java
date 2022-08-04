@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,13 +16,13 @@ public class ContactServiceImpl implements CRUDService<Contact> {
     private final ContactRepository contactRepository;
 
     @Override
-    public void deleteById(Integer id) {
-        contactRepository.deleteById(id);
+    public void deleteByUuid(UUID uuid) {
+        contactRepository.deleteByUuid(uuid);
     }
 
     @Override
-    public Contact getById(Integer id) {
-        return contactRepository.findById(id).orElseThrow(() -> new NoSuchElementException("ContactService.notFound"));
+    public Contact getByUuid(UUID uuid) {
+        return contactRepository.findByUuid(uuid);//.orElseThrow(() -> new NoSuchElementException("ContactService.notFound"));
     }
 
     @Override
