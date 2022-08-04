@@ -7,7 +7,6 @@ import java.util.UUID;
 public interface CRUDService<T> {
     void deleteByUuid(UUID uuid);
 
-    @Transactional
     T getByUuid(UUID uuid);
 
     T createOrUpdate(T object);

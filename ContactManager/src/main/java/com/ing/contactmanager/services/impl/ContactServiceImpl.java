@@ -6,6 +6,7 @@ import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class ContactServiceImpl implements CRUDService<Contact> {
     private final ContactRepository contactRepository;
 
     @Override
+    @Transactional
     public void deleteByUuid(UUID uuid) {
         contactRepository.deleteByUid(uuid);
     }
