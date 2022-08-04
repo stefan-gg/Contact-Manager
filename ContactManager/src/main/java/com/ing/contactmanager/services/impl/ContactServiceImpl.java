@@ -17,12 +17,12 @@ public class ContactServiceImpl implements CRUDService<Contact> {
 
     @Override
     public void deleteByUuid(UUID uuid) {
-        contactRepository.deleteByUuid(uuid);
+        contactRepository.deleteByUid(uuid);
     }
 
     @Override
     public Contact getByUuid(UUID uuid) {
-        return contactRepository.findByUuid(uuid);//.orElseThrow(() -> new NoSuchElementException("ContactService.notFound"));
+        return contactRepository.findByUid(uuid);//.orElseThrow(() -> new NoSuchElementException("ContactService.notFound"));
     }
 
     @Override

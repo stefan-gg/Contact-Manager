@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
-    Contact findByUuid(UUID uuid);
+    Contact findByUid(UUID uuid);
 
-    void deleteByUuid(UUID uuid);
+    void deleteByUid(UUID uuid);
 }

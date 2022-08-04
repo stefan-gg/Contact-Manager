@@ -17,12 +17,12 @@ public class UserServiceImpl implements CRUDService<User> {
 
     @Override
     public void deleteByUuid(UUID uuid) {
-        userRepository.deleteByUuid(uuid);
+        userRepository.deleteByUid(uuid);
     }
 
     @Override
     public User getByUuid(UUID uuid) {
-        return userRepository.findByUuid(uuid);//.orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
+        return userRepository.findByUid(uuid);//.orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
     }
 
     @Override

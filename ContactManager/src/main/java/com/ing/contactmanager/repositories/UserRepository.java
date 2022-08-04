@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    User findByUuid(UUID uuid);
+    User findByUid(UUID uuid);
 
-    void deleteByUuid(UUID uuid);
+    void deleteByUid(UUID uuid);
     List<User> findAllByOrderByLastNameAsc();
 }
