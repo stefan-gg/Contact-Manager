@@ -47,11 +47,13 @@ public class User {
     @Column(name = "role", nullable = false, length = 20)
     private Role role;
 
-    @CreationTimestamp
+
     @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+
     @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

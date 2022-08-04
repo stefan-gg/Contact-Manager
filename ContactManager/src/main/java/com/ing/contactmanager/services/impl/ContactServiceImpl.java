@@ -27,6 +27,7 @@ public class ContactServiceImpl implements CRUDService<Contact> {
 
     @Override
     public Contact createOrUpdate(Contact contact) {
+        contact.setUid(UUID.randomUUID());
         return contactRepository.save(contact);
     }
 

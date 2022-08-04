@@ -27,6 +27,7 @@ public class UserServiceImpl implements CRUDService<User> {
 
     @Override
     public User createOrUpdate(User user) {
+        user.setUid(UUID.randomUUID());
         return userRepository.save(user);
     }
 

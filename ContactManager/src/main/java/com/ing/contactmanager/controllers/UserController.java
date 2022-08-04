@@ -23,7 +23,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> save(@RequestBody User user){
-        user.setUid(UUID.randomUUID());
         return ResponseEntity.ok(userService.createOrUpdate(user));
     }
 
