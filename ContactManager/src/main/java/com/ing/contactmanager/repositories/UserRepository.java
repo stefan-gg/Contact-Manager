@@ -11,7 +11,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByUid(UUID uuid);
 
-    @Transactional
+
     void deleteByUid(UUID uuid);
     List<User> findAllByOrderByLastNameAsc();
 }

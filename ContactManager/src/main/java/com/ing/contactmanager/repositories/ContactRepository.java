@@ -10,6 +10,5 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
     Contact findByUid(UUID uuid);
 
-    @Transactional
     void deleteByUid(UUID uuid);
 }

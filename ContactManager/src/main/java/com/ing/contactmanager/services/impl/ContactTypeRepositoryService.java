@@ -14,7 +14,6 @@ import java.util.UUID;
 public class ContactTypeRepositoryService implements CRUDService<ContactType> {
 
     private final ContactTypeRepository contactTypeRepository;
-
     @Override
     public void deleteByUuid(UUID uuid) {
         contactTypeRepository.deleteByUid(uuid);
