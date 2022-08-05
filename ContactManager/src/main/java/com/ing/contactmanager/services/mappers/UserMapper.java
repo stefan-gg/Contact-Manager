@@ -40,7 +40,7 @@ public class UserMapper {
 //        userDTO.setCreatedAt(user.getCreatedAt());
 //        userDTO.setUpdatedAt(user.getUpdatedAt());
         userDTO.setRole(user.getRole().toString());
-        userDTO.setContacts(contactMapper.convertContactsToContactsDTO(user.getContacts()));
+        userDTO.setContacts(contactMapper.convertContactsToContactsDTO(contacts));
 
         return userDTO;
     };
