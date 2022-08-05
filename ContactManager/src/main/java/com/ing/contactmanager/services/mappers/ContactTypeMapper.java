@@ -1,4 +1,4 @@
-package com.ing.contactmanager.services.maps;
+package com.ing.contactmanager.services.mappers;
 
 import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
