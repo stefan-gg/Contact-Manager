@@ -1,40 +1,48 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.entities.User;
+import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
+import com.ing.contactmanager.services.maps.UserMapper;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements CRUDService<User> {
+public class UserServiceImpl implements CRUDService<UserDTO> {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = { SQLException.class })
     public void deleteByUuid(UUID uuid) {
         userRepository.deleteByUid(uuid);
     }
 
     @Override
-    public User getByUuid(UUID uuid) {
-        return userRepository.findByUid(uuid);//.orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public UserDTO getByUuid(UUID uuid) {
+        return userMapper.convertToUserDTO(userRepository.findByUid(uuid));//.orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
     }
 
     @Override
-    public User createOrUpdate(User user) {
-        user.setUid(UUID.randomUUID());
-        return userRepository.save(user);
+    @Transactional(rollbackFor = { SQLException.class })
+    public UserDTO createOrUpdate(UserDTO userDTO) {
+        //userDTO.setUuid(UUID.randomUUID());
+        return new UserDTO();
+        //return userRepository.save(user);
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.findAllByOrderByLastNameAsc();
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<UserDTO> getAll() {
+        return userMapper.getAllUsers();
     }
 }

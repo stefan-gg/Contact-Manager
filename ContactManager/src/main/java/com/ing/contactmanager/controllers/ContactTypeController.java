@@ -1,6 +1,6 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.entities.ContactType;
+import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,31 +14,35 @@ import java.util.UUID;
 @RequestMapping("/contact_types")
 public class ContactTypeController {
 
-    private final CRUDService<ContactType> contactTypeService;
+    private final CRUDService<ContactTypeDTO> contactTypeServiceDTO;
 
     @GetMapping
-    public ResponseEntity<List<ContactType>> getAll(){
-        return ResponseEntity.ok(contactTypeService.getAll());
+    public ResponseEntity<List<ContactTypeDTO>> getAll() {
+        //return ResponseEntity.ok(contactTypeServiceDTO.getAll());
+        List<ContactTypeDTO> contactTypeDTOList = contactTypeServiceDTO.getAll();
+        return ResponseEntity.ok(contactTypeDTOList);
     }
 
     @PostMapping
-    public ResponseEntity<ContactType> save(@RequestBody ContactType contactType){
-        contactType.setUid(UUID.randomUUID());
-        return ResponseEntity.ok(contactTypeService.createOrUpdate(contactType));
+    public ResponseEntity<ContactTypeDTO> save(@RequestBody ContactTypeDTO contactTypeDTO) {
+//        contactType.setUid(UUID.randomUUID());
+//        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(contactType));
+        return null;
     }
 
     @PutMapping
-    public ResponseEntity<ContactType> update(@RequestBody ContactType contactType){
-        return ResponseEntity.ok(contactTypeService.createOrUpdate(contactType));
+    public ResponseEntity<ContactTypeDTO> update(@RequestBody ContactTypeDTO contactTypeDTO) {
+        return null;//ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(contactType));
     }
 
     @DeleteMapping("/{uuid}")
-    public void deleteById(@PathVariable UUID uuid){
-        contactTypeService.deleteByUuid(uuid);
+    public void deleteById(@PathVariable UUID uuid) {
+        //contactTypeServiceDTO.deleteByUuid(uuid);
+        contactTypeServiceDTO.deleteByUuid(uuid);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<ContactType> getById(@PathVariable UUID uuid){
-        return ResponseEntity.ok(contactTypeService.getByUuid(uuid));
+    public ResponseEntity<ContactTypeDTO> getById(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(contactTypeServiceDTO.getByUuid(uuid));
     }
 }

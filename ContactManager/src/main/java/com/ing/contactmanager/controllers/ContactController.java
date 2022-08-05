@@ -1,6 +1,6 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.entities.Contact;
+import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,31 +14,31 @@ import java.util.UUID;
 @RequestMapping("/contacts")
 public class ContactController {
 
-    private final CRUDService<Contact> contactService;
+    private final CRUDService<ContactDTO> contactServiceDTO;
 
     @GetMapping
-    public ResponseEntity<List<Contact>> getAll(){
-        return ResponseEntity.ok(contactService.getAll());
+    public ResponseEntity<List<ContactDTO>> getAll(){
+        return ResponseEntity.ok(contactServiceDTO.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<Contact> save(@RequestBody Contact contact){
-        contact.setUid(UUID.randomUUID());
-        return ResponseEntity.ok(contactService.createOrUpdate(contact));
+    public ResponseEntity<ContactDTO> save(@RequestBody ContactDTO contactDTO){
+        //contact.setUid(UUID.randomUUID());
+        return null;//ResponseEntity.ok(contactServiceDTO.createOrUpdate(contact));
     }
 
     @PutMapping
-    public ResponseEntity<Contact> update(@RequestBody Contact contact){
-        return ResponseEntity.ok(contactService.createOrUpdate(contact));
+    public ResponseEntity<ContactDTO> update(@RequestBody ContactDTO contactDTO){
+        return null;//ResponseEntity.ok(contactServiceDTO.createOrUpdate(contact));
     }
 
     @DeleteMapping("/{uuid}")
     public void delete(@PathVariable UUID uuid){
-        contactService.deleteByUuid(uuid);
+        //contactServiceDTO.deleteByUuid(uuid);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<Contact> getById(@PathVariable UUID uuid){
-        return ResponseEntity.ok(contactService.getByUuid(uuid));
+    public ResponseEntity<ContactDTO> getById(@PathVariable UUID uuid){
+        return ResponseEntity.ok(contactServiceDTO.getByUuid(uuid));
     }
 }

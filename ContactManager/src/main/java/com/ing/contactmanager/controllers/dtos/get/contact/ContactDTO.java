@@ -1,4 +1,4 @@
-package com.ing.contactmanager.dtos;
+package com.ing.contactmanager.controllers.dtos.get.contact;
 
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
@@ -11,8 +11,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ContactDTO {
-    private Integer id;
-    private UUID uuid;
+//    private Integer id;
+//    private UUID uuid;
     private String email;
     private String password;
     private String firstName;
@@ -20,8 +20,8 @@ public class ContactDTO {
     private String info;
     private String address;
     private String phoneNumber;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private User user;
-    private ContactType contactType;
+//    private LocalDateTime createdAt;
+//    private LocalDateTime updatedAt;
+//    private User user;
+//    private ContactType contactType;
 }

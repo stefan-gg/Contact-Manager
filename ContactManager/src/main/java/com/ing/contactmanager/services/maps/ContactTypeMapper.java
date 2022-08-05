@@ -1,19 +1,20 @@
-package com.ing.contactmanager.dtos.maps;
+package com.ing.contactmanager.services.maps;
 
-import com.ing.contactmanager.dtos.ContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class ContactTypeMapService {
+public class ContactTypeMapper {
 
     private final ContactTypeRepository contactTypeRepository;
+    private final ContactMapper contactMapper;
 
     public List<ContactTypeDTO> getAllContactTypes() {
         return ((List<ContactType>) contactTypeRepository
@@ -23,12 +24,13 @@ public class ContactTypeMapService {
                 .collect(Collectors.toList());
     };
 
-    private ContactTypeDTO convertToContactTypeDTO(ContactType contactType){
+    public ContactTypeDTO convertToContactTypeDTO(ContactType contactType){
         ContactTypeDTO contactTypeDTO = new ContactTypeDTO();
 
-        contactTypeDTO.setId(contactType.getId());
-        contactTypeDTO.setUuid(contactType.getUid());
+//        contactTypeDTO.setId(contactType.getId());
+//        contactTypeDTO.setUuid(contactType.getUid());
         contactTypeDTO.setContactTypeName(contactType.getContactTypeName());
+        contactTypeDTO.setContacts(contactMapper.convertContactsToContactsDTO(contactType.getContacts()));
 
         return contactTypeDTO;
     };
