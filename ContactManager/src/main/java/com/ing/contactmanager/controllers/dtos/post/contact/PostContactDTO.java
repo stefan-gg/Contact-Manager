@@ -20,4 +20,5 @@ public class PostContactDTO {
     private String address;
     @NotBlank
     private String phoneNumber;
+
 }

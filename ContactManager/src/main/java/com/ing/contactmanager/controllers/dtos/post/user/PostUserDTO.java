@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
@@ -19,5 +20,6 @@ public class PostUserDTO {
     @NotBlank
     private String lastName;
     @NotBlank
+    @Pattern(regexp = "ROLE_ADMIN|ROLE_USER")
     private String role;
 }

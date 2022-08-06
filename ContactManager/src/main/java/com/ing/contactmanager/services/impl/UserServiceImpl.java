@@ -2,6 +2,7 @@ package com.ing.contactmanager.services.impl;
 
 import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
+import com.ing.contactmanager.controllers.dtos.post.user.PostUserDTO;
 import com.ing.contactmanager.services.mappers.get.UserMapper;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
@@ -12,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements CRUDService<UserDTO> {
+public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -30,14 +32,16 @@ public class UserServiceImpl implements CRUDService<UserDTO> {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public UserDTO getByUuid(UUID uuid) {
-        return userMapper.convertToUserDTO(userRepository.findByUid(uuid));//.orElseThrow(() -> new NoSuchElementException("UserService.notFound"));
+        return userMapper.convertToUserDTO(userRepository
+                .findByUid(uuid)
+                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist")));
     }
 
     @Override
     @Transactional(rollbackFor = { SQLException.class })
-    public UserDTO createOrUpdate(UserDTO userDTO) {
+    public PostUserDTO createOrUpdate(PostUserDTO postUserDTO) {
         //userDTO.setUuid(UUID.randomUUID());
-        return new UserDTO();
+        return new PostUserDTO();
         //return userRepository.save(user);
     }
 

@@ -4,12 +4,12 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-public interface CRUDService<T> {
+public interface CRUDService<T, U> {
     void deleteByUuid(UUID uuid);
 
     T getByUuid(UUID uuid);
 
-    T createOrUpdate(T object);
+    U createOrUpdate(U object);
 
     List<T> getAll();
 }
