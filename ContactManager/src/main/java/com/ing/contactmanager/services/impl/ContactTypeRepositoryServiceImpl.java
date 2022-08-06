@@ -3,7 +3,7 @@ package com.ing.contactmanager.services.impl;
 import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
 import com.ing.contactmanager.services.CRUDService;
-import com.ing.contactmanager.services.mappers.ContactTypeMapper;
+import com.ing.contactmanager.services.mappers.get.ContactTypeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

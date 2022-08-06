@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ContactTypeDTO {
+
 //    private Integer id;
 //    private UUID uuid;
     private String contactTypeName;

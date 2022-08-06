@@ -1,4 +1,4 @@
-package com.ing.contactmanager.services.mappers;
+package com.ing.contactmanager.services.mappers.get;
 
 import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
@@ -6,6 +6,7 @@ import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.ContactRepository;
 import com.ing.contactmanager.repositories.UserRepository;
+import com.ing.contactmanager.services.mappers.get.ContactMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

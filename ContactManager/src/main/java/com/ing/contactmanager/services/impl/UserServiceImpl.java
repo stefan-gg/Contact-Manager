@@ -2,7 +2,7 @@ package com.ing.contactmanager.services.impl;
 
 import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
-import com.ing.contactmanager.services.mappers.UserMapper;
+import com.ing.contactmanager.services.mappers.get.UserMapper;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;

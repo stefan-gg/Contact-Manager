@@ -11,10 +11,10 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ContactDTO {
+
 //    private Integer id;
 //    private UUID uuid;
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
     private String info;
