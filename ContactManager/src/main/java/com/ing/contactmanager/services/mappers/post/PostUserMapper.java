@@ -11,6 +11,7 @@ public class PostUserMapper {
     public User convertPostUserDTOToUser(PostUserDTO postUserDTO){
         User user = new User();
 
+        user.setUid(postUserDTO.getUuid());
         user.setEmail(postUserDTO.getEmail());
         user.setPassword(postUserDTO.getPassword());
         user.setFirstName(postUserDTO.getFirstName());
