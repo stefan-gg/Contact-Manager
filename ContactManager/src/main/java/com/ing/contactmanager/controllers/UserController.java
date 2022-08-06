@@ -1,7 +1,9 @@
 package com.ing.contactmanager.controllers;
 
+import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
 import com.ing.contactmanager.services.CRUDService;
+import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.UUID;
 public class UserController {
 
     private final CRUDService<UserDTO> userServiceDTO;
+    private final UserServiceImpl userServiceImpl;
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers(){
@@ -32,6 +35,11 @@ public class UserController {
     public ResponseEntity<UserDTO> update(@RequestBody UserDTO userDTO){
         return null;//ResponseEntity.ok(userServiceDTO.createOrUpdate(user));
     }
+
+    @GetMapping("/get-contacts/{uuid}")
+    public ResponseEntity<List<ContactDTO>> getContactsForUser(@PathVariable UUID uuid){
+      return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid));
+    };
 
     @DeleteMapping("/{uuid}")
     public void deleteById(@PathVariable UUID uuid){

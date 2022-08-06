@@ -1,5 +1,6 @@
 package com.ing.contactmanager.services.impl;
 
+import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
 import com.ing.contactmanager.services.mappers.UserMapper;
 import com.ing.contactmanager.repositories.UserRepository;
@@ -45,4 +46,8 @@ public class UserServiceImpl implements CRUDService<UserDTO> {
     public List<UserDTO> getAll() {
         return userMapper.getAllUsers();
     }
+
+    public List<ContactDTO> getContactsForUser(UUID uuid){
+      return userMapper.getAllContactsForUser(uuid);
+    };
 }

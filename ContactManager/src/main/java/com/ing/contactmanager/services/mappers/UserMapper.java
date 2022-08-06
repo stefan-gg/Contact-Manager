@@ -1,5 +1,6 @@
 package com.ing.contactmanager.services.mappers;
 
+import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
 import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,6 +27,12 @@ public class UserMapper {
                 .stream()
                 .map(this::convertToUserDTO)
                 .collect(Collectors.toList());
+    };
+
+    public List<ContactDTO> getAllContactsForUser(UUID uuid){
+        List<Contact> contacts = contactRepository.getContactsByUser_Uid(uuid);
+        List<ContactDTO> contactsDTO = contactMapper.convertContactsToContactsDTO(contacts);
+        return contactsDTO;
     };
 
     public UserDTO convertToUserDTO(User user) {
