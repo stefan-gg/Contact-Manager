@@ -21,7 +21,7 @@ public class ContactType {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "uid")
+    @Column(name = "uid", updatable = false)
     private UUID uid;
 
     @JsonIgnore

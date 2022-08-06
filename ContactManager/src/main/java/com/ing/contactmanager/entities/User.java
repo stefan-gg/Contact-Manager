@@ -26,7 +26,7 @@ public class User {
     private Integer id;
 
 
-    @Column(name = "uid")
+    @Column(name = "uid", updatable = false)
     private UUID uid;
 
     @JsonIgnore

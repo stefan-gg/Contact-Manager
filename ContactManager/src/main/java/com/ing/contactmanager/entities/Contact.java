@@ -22,7 +22,7 @@ public class Contact {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "uid")
+    @Column(name = "uid", updatable = false)
     private UUID uid;
 
     @Column(name = "first_name", nullable = false, length = 50)

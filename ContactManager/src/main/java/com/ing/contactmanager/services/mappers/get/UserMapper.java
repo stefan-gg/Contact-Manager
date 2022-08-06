@@ -6,7 +6,6 @@ import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.ContactRepository;
 import com.ing.contactmanager.repositories.UserRepository;
-import com.ing.contactmanager.services.mappers.get.ContactMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,13 +27,13 @@ public class UserMapper {
                 .stream()
                 .map(this::convertToUserDTO)
                 .collect(Collectors.toList());
-    };
+    }
 
     public List<ContactDTO> getAllContactsForUser(UUID uuid){
         List<Contact> contacts = contactRepository.getContactsByUser_Uid(uuid);
         List<ContactDTO> contactsDTO = contactMapper.convertContactsToContactsDTO(contacts);
         return contactsDTO;
-    };
+    }
 
     public UserDTO convertToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
@@ -52,5 +51,5 @@ public class UserMapper {
         userDTO.setContacts(contactMapper.convertContactsToContactsDTO(contacts));
 
         return userDTO;
-    };
+    }
 }

@@ -1,6 +1,7 @@
 package com.ing.contactmanager.controllers;
 
 import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.post.contactType.PostContactTypeDTO;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/contact_types")
 public class ContactTypeController {
 
-    private final CRUDService<ContactTypeDTO> contactTypeServiceDTO;
+    private final CRUDService<ContactTypeDTO, PostContactTypeDTO> contactTypeServiceDTO;
 
     @GetMapping
     public ResponseEntity<List<ContactTypeDTO>> getAll() {

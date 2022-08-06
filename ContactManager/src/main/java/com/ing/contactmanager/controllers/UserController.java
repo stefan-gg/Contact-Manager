@@ -2,6 +2,7 @@ package com.ing.contactmanager.controllers;
 
 import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
+import com.ing.contactmanager.controllers.dtos.post.user.PostUserDTO;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    private final CRUDService<UserDTO> userServiceDTO;
+    private final CRUDService<UserDTO, PostUserDTO> userServiceDTO;
     private final UserServiceImpl userServiceImpl;
 
     @GetMapping
@@ -27,19 +28,19 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO){
-        return null;//ResponseEntity.ok(userServiceDTO.createOrUpdate(user));
+    public ResponseEntity<PostUserDTO> save(@RequestBody PostUserDTO postUserDTO){
+        return ResponseEntity.ok(userServiceDTO.createOrUpdate(postUserDTO, null));
     }
 
-    @PutMapping
-    public ResponseEntity<UserDTO> update(@RequestBody UserDTO userDTO){
-        return null;//ResponseEntity.ok(userServiceDTO.createOrUpdate(user));
+    @PutMapping("/{uuid}")
+    public ResponseEntity<PostUserDTO> update(@RequestBody PostUserDTO postUserDTO, @PathVariable UUID uuid){
+        return ResponseEntity.ok(userServiceDTO.createOrUpdate(postUserDTO, uuid));
     }
 
     @GetMapping("/get-contacts/{uuid}")
     public ResponseEntity<List<ContactDTO>> getContactsForUser(@PathVariable UUID uuid){
       return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid));
-    };
+    }
 
     @DeleteMapping("/{uuid}")
     public void deleteById(@PathVariable UUID uuid){

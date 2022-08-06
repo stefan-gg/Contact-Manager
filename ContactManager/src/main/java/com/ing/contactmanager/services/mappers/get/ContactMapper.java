@@ -21,7 +21,7 @@ public class ContactMapper {
                 .stream()
                 .map(this::convertContactToContactDTO)
                 .collect(Collectors.toList());
-    };
+    }
 
     public List<ContactDTO> convertContactsToContactsDTO(List<Contact> contacts){
         return contacts

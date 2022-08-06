@@ -6,11 +6,12 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class PostUserDTO {
-
+    private UUID uuid;
     @Email
     private String email;
     @NotBlank

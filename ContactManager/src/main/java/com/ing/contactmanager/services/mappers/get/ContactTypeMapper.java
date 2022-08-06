@@ -3,7 +3,6 @@ package com.ing.contactmanager.services.mappers.get;
 import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
-import com.ing.contactmanager.services.mappers.get.ContactMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ public class ContactTypeMapper {
                 .stream()
                 .map(this::convertToContactTypeDTO)
                 .collect(Collectors.toList());
-    };
+    }
 
     public ContactTypeDTO convertToContactTypeDTO(ContactType contactType){
         ContactTypeDTO contactTypeDTO = new ContactTypeDTO();
@@ -34,5 +33,5 @@ public class ContactTypeMapper {
         contactTypeDTO.setContacts(contactMapper.convertContactsToContactsDTO(contactType.getContacts()));
 
         return contactTypeDTO;
-    };
+    }
 }

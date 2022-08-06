@@ -1,12 +1,7 @@
 package com.ing.contactmanager.controllers.dtos.get.contact;
 
-import com.ing.contactmanager.entities.ContactType;
-import com.ing.contactmanager.entities.User;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter

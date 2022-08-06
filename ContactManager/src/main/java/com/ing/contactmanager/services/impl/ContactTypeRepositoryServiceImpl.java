@@ -37,7 +37,7 @@ public class ContactTypeRepositoryServiceImpl implements CRUDService<ContactType
 
     @Override
     @Transactional(rollbackFor = { SQLException.class })
-    public PostContactTypeDTO createOrUpdate(PostContactTypeDTO postContactTypeDTO) {
+    public PostContactTypeDTO createOrUpdate(PostContactTypeDTO postContactTypeDTO, UUID uuid) {
         return new PostContactTypeDTO();//contactTypeRepository.save(contactType);
     }
 
