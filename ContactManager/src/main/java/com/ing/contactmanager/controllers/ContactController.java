@@ -23,19 +23,18 @@ public class ContactController {
     }
 
     @PostMapping
-    public ResponseEntity<ContactDTO> save(@RequestBody ContactDTO contactDTO){
-        //contact.setUid(UUID.randomUUID());
-        return null;//ResponseEntity.ok(contactServiceDTO.createOrUpdate(contact));
+    public ResponseEntity<PostContactDTO> save(@RequestBody PostContactDTO postContactDTO){
+        return ResponseEntity.ok(contactServiceDTO.createOrUpdate(postContactDTO, null));
     }
 
-    @PutMapping
-    public ResponseEntity<ContactDTO> update(@RequestBody ContactDTO contactDTO){
-        return null;//ResponseEntity.ok(contactServiceDTO.createOrUpdate(contact));
+    @PutMapping("/{uuid}")
+    public ResponseEntity<PostContactDTO> update(@RequestBody PostContactDTO postContactDTO, @PathVariable UUID uuid){
+        return ResponseEntity.ok(contactServiceDTO.createOrUpdate(postContactDTO, uuid));
     }
 
     @DeleteMapping("/{uuid}")
     public void delete(@PathVariable UUID uuid){
-        //contactServiceDTO.deleteByUuid(uuid);
+        contactServiceDTO.deleteByUuid(uuid);
     }
 
     @GetMapping("/{uuid}")

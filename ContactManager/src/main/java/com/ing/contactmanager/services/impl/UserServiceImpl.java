@@ -71,7 +71,7 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
         return userMapper.getAllContactsForUser(uuid);
     }
 
-    public User getUserByUuid(UUID uuid) {
+    private User getUserByUuid(UUID uuid) {
         return userRepository
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));

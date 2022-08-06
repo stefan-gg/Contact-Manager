@@ -19,26 +19,22 @@ public class ContactTypeController {
 
     @GetMapping
     public ResponseEntity<List<ContactTypeDTO>> getAll() {
-        //return ResponseEntity.ok(contactTypeServiceDTO.getAll());
-        List<ContactTypeDTO> contactTypeDTOList = contactTypeServiceDTO.getAll();
-        return ResponseEntity.ok(contactTypeDTOList);
+        return ResponseEntity.ok(contactTypeServiceDTO.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<ContactTypeDTO> save(@RequestBody ContactTypeDTO contactTypeDTO) {
-//        contactType.setUid(UUID.randomUUID());
-//        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(contactType));
-        return null;
+    public ResponseEntity<PostContactTypeDTO> save(@RequestBody PostContactTypeDTO postContactTypeDTO) {
+        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(postContactTypeDTO, null));
+
     }
 
-    @PutMapping
-    public ResponseEntity<ContactTypeDTO> update(@RequestBody ContactTypeDTO contactTypeDTO) {
-        return null;//ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(contactType));
+    @PutMapping("/{uuid}")
+    public ResponseEntity<PostContactTypeDTO> update(@RequestBody PostContactTypeDTO postContactTypeDTO, @PathVariable UUID uuid) {
+        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(postContactTypeDTO, uuid));
     }
 
     @DeleteMapping("/{uuid}")
     public void deleteById(@PathVariable UUID uuid) {
-        //contactTypeServiceDTO.deleteByUuid(uuid);
         contactTypeServiceDTO.deleteByUuid(uuid);
     }
 

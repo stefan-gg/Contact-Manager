@@ -11,6 +11,7 @@ public class PostContactTypeMapper {
         ContactType contactType = new ContactType();
 
         contactType.setContactTypeName(postContactTypeDTO.getContactTypeName());
+        contactType.setUid(postContactTypeDTO.getUuid());
 
         return contactType;
     }
