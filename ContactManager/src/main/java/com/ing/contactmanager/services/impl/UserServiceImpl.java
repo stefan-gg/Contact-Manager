@@ -52,7 +52,7 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
             User updatedUser = postUserMapper.convertPostUserDTOToUser(postUserDTO);
 
             updatedUser.setId(user.getId());
-            updatedUser.setUid(user.getUid());
+            //updatedUser.setUid(user.getUid());
 
             userRepository.save(updatedUser);
 

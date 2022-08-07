@@ -11,16 +11,17 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PostUserDTO {
+    private Integer id;
     private UUID uuid;
     @Email
     private String email;
-    @NotBlank
+    @NotBlank(message = "Password cannot be null")
     private String password;
-    @NotBlank
+    @NotBlank(message = "First name cannot be null")
     private String firstName;
-    @NotBlank
+    @NotBlank(message = "Last name cannot be null")
     private String lastName;
-    @NotBlank
+    @NotBlank(message = "Role cannot be null")
     @Pattern(regexp = "ROLE_ADMIN|ROLE_USER")
     private String role;
 }

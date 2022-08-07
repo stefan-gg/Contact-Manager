@@ -55,7 +55,7 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
 
             contactTypeRepository.save(updatedContactType);
         }
-        //postContactTypeDTO.setUuid(null);
+
         return postContactTypeDTO;
     }
 
@@ -65,7 +65,7 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
         return contactTypeMapper.getAllContactTypes();
     }
 
-    private ContactType getContactTypeByUuid(UUID uuid){
+    private ContactType getContactTypeByUuid(UUID uuid) {
         return contactTypeRepository
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));

@@ -9,8 +9,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PostContactTypeDTO {
-
+    private Integer id;
     private UUID uuid;
-    @NotBlank
+    @NotBlank(message = "Contact type cannot be null")
     private String contactTypeName;
 }

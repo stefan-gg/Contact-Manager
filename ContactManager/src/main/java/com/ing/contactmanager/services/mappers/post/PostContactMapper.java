@@ -2,12 +2,14 @@ package com.ing.contactmanager.services.mappers.post;
 
 import com.ing.contactmanager.controllers.dtos.post.contact.PostContactDTO;
 import com.ing.contactmanager.entities.Contact;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PostContactMapper {
 
-    public Contact convertPostContactDTOToContact(PostContactDTO postContactDTO){
+    public Contact convertPostContactDTOToContact(PostContactDTO postContactDTO) {
         Contact contact = new Contact();
 
         contact.setEmail(postContactDTO.getEmail());
@@ -16,7 +18,10 @@ public class PostContactMapper {
         contact.setInfo(postContactDTO.getInfo());
         contact.setAddress(postContactDTO.getAddress());
         contact.setPhoneNumber(postContactDTO.getPhoneNumber());
-        //TODO: kako da se dodaju user i contactType ? saznaj
+        //contact.setContactType(postContactTypeMapper
+        //        .convertPostContactTypeDTOToContactType(postContactDTO.getPostContactTypeDTO()));
+        //contact.setUser(postUserMapper
+        //        .convertPostUserDTOToUser(postContactDTO.getPostUserDTO()));
 
         return contact;
     }

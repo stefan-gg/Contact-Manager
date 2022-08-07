@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     void deleteByUid(UUID uuid);
     List<User> findAllByOrderByLastNameAsc();
+
+    User getUserByEmail(String email);
 }

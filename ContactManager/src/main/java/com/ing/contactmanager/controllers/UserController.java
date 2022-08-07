@@ -22,9 +22,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers(){
-        //return ResponseEntity.ok(userServiceDTO.getAll());
-        List<UserDTO> userDTOList = userServiceDTO.getAll();
-        return ResponseEntity.ok(userDTOList);
+        return ResponseEntity.ok(userServiceDTO.getAll());
     }
 
     @PostMapping

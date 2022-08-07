@@ -12,4 +12,5 @@ public interface ContactTypeRepository extends JpaRepository<ContactType, Intege
 
     void deleteByUid(UUID uuid);
 
+    ContactType getContactTypeByContactTypeName(String contactTypeName);
 }

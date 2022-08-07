@@ -20,4 +20,19 @@ public class PostUserMapper {
 
         return user;
     }
+
+    public PostUserDTO covertUserToPostUserDTO(User user){
+        PostUserDTO postUserDTO = new PostUserDTO();
+
+        postUserDTO.setId(user.getId());
+        postUserDTO.setUuid(user.getUid());
+        postUserDTO.setEmail(user.getEmail());
+        postUserDTO.setPassword(user.getPassword());
+        postUserDTO.setRole(user.getRole().toString());
+        postUserDTO.setFirstName(user.getFirstName());
+        postUserDTO.setLastName(user.getLastName());
+        postUserDTO.setEmail(user.getEmail());
+
+        return postUserDTO;
+    }
 }
