@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class UserDTO {
 
 //    private Integer id;
-//    private UUID uuid;
+    private UUID uuid;
     private String email;
 //    private String password;
     private String firstName;

@@ -34,7 +34,7 @@ public class ContactMapper {
         ContactDTO contactDTO = new ContactDTO();
 
 //        contactDTO.setId(contact.getId());
-//        contactDTO.setUuid(contact.getUid());
+        contactDTO.setUuid(contact.getUid());
         contactDTO.setEmail(contact.getEmail());
         contactDTO.setFirstName((contact.getFirstName()));
         contactDTO.setLastName(contact.getLastName());
@@ -43,6 +43,7 @@ public class ContactMapper {
 //        contactDTO.setContactType(contact.getContactType());
         contactDTO.setAddress(contact.getAddress());
         contactDTO.setInfo(contact.getInfo());
+        contactDTO.setPhoneNumber(contact.getPhoneNumber());
 //        contactDTO.setUser(contact.getUser());
 
         return contactDTO;

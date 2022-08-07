@@ -40,7 +40,7 @@ public class UserMapper {
         List<Contact> contacts = contactRepository.getContactsByUser_Uid(user.getUid());
 
 //        userDTO.setId(user.getId());
-//        userDTO.setUuid(user.getUid());
+        userDTO.setUuid(user.getUid());
 //        userDTO.setPassword(user.getPassword());
         userDTO.setEmail(user.getEmail());
         userDTO.setFirstName((user.getFirstName()));

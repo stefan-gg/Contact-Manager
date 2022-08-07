@@ -28,7 +28,7 @@ public class ContactTypeMapper {
         ContactTypeDTO contactTypeDTO = new ContactTypeDTO();
 
 //        contactTypeDTO.setId(contactType.getId());
-//        contactTypeDTO.setUuid(contactType.getUid());
+        contactTypeDTO.setUuid(contactType.getUid());
         contactTypeDTO.setContactTypeName(contactType.getContactTypeName());
         contactTypeDTO.setContacts(contactMapper.convertContactsToContactsDTO(contactType.getContacts()));
 
