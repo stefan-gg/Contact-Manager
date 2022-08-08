@@ -4,16 +4,14 @@ import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
 import com.ing.contactmanager.controllers.dtos.post.user.PostUserDTO;
 import com.ing.contactmanager.entities.User;
-import com.ing.contactmanager.services.mappers.get.UserMapper;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
+import com.ing.contactmanager.services.mappers.get.UserMapper;
 import com.ing.contactmanager.services.mappers.post.PostUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -27,13 +25,13 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
     private final PostUserMapper postUserMapper;
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
         userRepository.deleteByUid(uuid);
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(readOnly = true)
     public UserDTO getByUuid(UUID uuid) {
         return userMapper.convertToUserDTO(userRepository
                 .findByUid(uuid)
@@ -41,7 +39,7 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
     }
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(rollbackFor = Exception.class)
     public PostUserDTO createOrUpdate(PostUserDTO postUserDTO, UUID uuid) {
         if (uuid == null) {
             postUserDTO.setUuid(UUID.randomUUID());
@@ -62,7 +60,7 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(readOnly = true)
     public List<UserDTO> getAll() {
         return userMapper.getAllUsers();
     }

@@ -13,10 +13,8 @@ import com.ing.contactmanager.services.mappers.get.ContactMapper;
 import com.ing.contactmanager.services.mappers.post.PostContactMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -32,13 +30,13 @@ public class ContactServiceImpl implements CRUDService<ContactDTO, PostContactDT
     private final PostContactMapper postContactMapper;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
         contactRepository.deleteByUid(uuid);
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(readOnly = true)
     public ContactDTO getByUuid(UUID uuid) {
         return contactMapper.convertContactToContactDTO(contactRepository
                 .findByUid(uuid)
@@ -46,7 +44,7 @@ public class ContactServiceImpl implements CRUDService<ContactDTO, PostContactDT
     }
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(rollbackFor = Exception.class)
     public PostContactDTO createOrUpdate(PostContactDTO postContactDTO, UUID uuid) {
 
         User user = userRepository.getUserByEmail(postContactDTO.getUserEmail());
@@ -90,7 +88,7 @@ public class ContactServiceImpl implements CRUDService<ContactDTO, PostContactDT
     }
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(readOnly = true)
     public List<ContactDTO> getAll() {
         return contactMapper.getAllContacts();
     }

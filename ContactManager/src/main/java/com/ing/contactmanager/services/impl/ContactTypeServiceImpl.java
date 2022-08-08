@@ -9,10 +9,8 @@ import com.ing.contactmanager.services.mappers.get.ContactTypeMapper;
 import com.ing.contactmanager.services.mappers.post.PostContactTypeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -26,13 +24,13 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
     private final PostContactTypeMapper postContactTypeMapper;
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
         contactTypeRepository.deleteByUid(uuid);
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(readOnly = true)
     public ContactTypeDTO getByUuid(UUID uuid) {
         return contactTypeMapper.convertToContactTypeDTO(contactTypeRepository
                 .findByUid(uuid)
@@ -40,7 +38,7 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
     }
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(rollbackFor = Exception.class)
     public PostContactTypeDTO createOrUpdate(PostContactTypeDTO postContactTypeDTO, UUID uuid) {
         if (uuid == null) {
             postContactTypeDTO.setUuid(UUID.randomUUID());
@@ -60,7 +58,7 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(readOnly = true)
     public List<ContactTypeDTO> getAll() {
         return contactTypeMapper.getAllContactTypes();
     }
