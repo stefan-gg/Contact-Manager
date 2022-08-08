@@ -11,6 +11,8 @@ import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.ContactMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,5 +103,10 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
         return contactRepository
                 .getContactsByUser_Uid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
+    }
+
+    public List<ResponseContactDTO> getContactsByPage(int pageNum, int numOfElements){
+        Pageable page = PageRequest.of(pageNum, numOfElements);
+        return contactMapper.getAllContacts(contactRepository.findAllByOrderByLastNameAsc(page));
     }
 }

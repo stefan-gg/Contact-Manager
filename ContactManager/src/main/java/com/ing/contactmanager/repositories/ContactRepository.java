@@ -1,6 +1,7 @@
 package com.ing.contactmanager.repositories;
 
 import com.ing.contactmanager.entities.Contact;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
     Optional<List<Contact>> getContactsByUser_Uid(UUID uuid);
 
-//    List<Contact> findAllByLastName()
+    List<Contact> findAllByOrderByLastNameAsc(Pageable pageable);
 
     void deleteByUid(UUID uuid);
 }

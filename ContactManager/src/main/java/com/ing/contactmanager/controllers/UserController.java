@@ -21,37 +21,37 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
 
     @GetMapping
-    public ResponseEntity<List<ResponseUserDTO>> getAllUsers(){
+    public ResponseEntity<List<ResponseUserDTO>> getAllUsers() {
         return ResponseEntity.ok(userServiceDTO.getAll());
     }
 
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<List<ResponseUserDTO>> getAllUsersFromPage(@RequestParam("page") int page, @RequestParam int size){
+    public ResponseEntity<List<ResponseUserDTO>> getAllUsersFromPage(@RequestParam("page") int page, @RequestParam int size) {
         return ResponseEntity.ok(userServiceImpl.getUsersByPage(page, size));
     }
 
     @PostMapping
-    public ResponseEntity<RequestUserDTO> save(@RequestBody RequestUserDTO requestUserDTO){
+    public ResponseEntity<RequestUserDTO> save(@RequestBody RequestUserDTO requestUserDTO) {
         return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, null));
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<RequestUserDTO> update(@RequestBody RequestUserDTO requestUserDTO, @PathVariable UUID uuid){
+    public ResponseEntity<RequestUserDTO> update(@RequestBody RequestUserDTO requestUserDTO, @PathVariable UUID uuid) {
         return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, uuid));
     }
 
     @GetMapping("/get-contacts/{uuid}")
-    public ResponseEntity<List<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid){
-      return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid));
+    public ResponseEntity<List<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid));
     }
 
     @DeleteMapping("/{uuid}")
-    public void deleteById(@PathVariable UUID uuid){
+    public void deleteById(@PathVariable UUID uuid) {
         userServiceDTO.deleteByUuid(uuid);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<ResponseUserDTO> getById(@PathVariable UUID uuid){
+    public ResponseEntity<ResponseUserDTO> getById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(userServiceDTO.getByUuid(uuid));
     }
 }

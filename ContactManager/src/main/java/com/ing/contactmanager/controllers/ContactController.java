@@ -3,6 +3,7 @@ package com.ing.contactmanager.controllers;
 import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
 import com.ing.contactmanager.services.CRUDService;
+import com.ing.contactmanager.services.impl.ContactServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,16 @@ import java.util.UUID;
 public class ContactController {
 
     private final CRUDService<ResponseContactDTO, RequestContactDTO> contactServiceDTO;
+    private final ContactServiceImpl contactService;
 
     @GetMapping
     public ResponseEntity<List<ResponseContactDTO>> getAll(){
         return ResponseEntity.ok(contactServiceDTO.getAll());
+    }
+
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<List<ResponseContactDTO>> getAllContactsFromPage(@RequestParam("page") int page, @RequestParam int size){
+        return ResponseEntity.ok(contactService.getContactsByPage(page, size));
     }
 
     @PostMapping
