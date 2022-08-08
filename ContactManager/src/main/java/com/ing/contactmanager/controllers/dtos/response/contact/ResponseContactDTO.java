@@ -1,24 +1,24 @@
-package com.ing.contactmanager.controllers.dtos.get.user;
+package com.ing.contactmanager.controllers.dtos.response.contact;
 
-import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class UserDTO {
+public class ResponseContactDTO {
 
 //    private Integer id;
     private UUID uuid;
     private String email;
-//    private String password;
     private String firstName;
     private String lastName;
-    private String role;
+    private String info;
+    private String address;
+    private String phoneNumber;
 //    private LocalDateTime createdAt;
 //    private LocalDateTime updatedAt;
-    private List<ContactDTO> contacts;
+//    private User user;
+//    private ContactType contactType;
 }

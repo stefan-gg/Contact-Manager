@@ -1,4 +1,4 @@
-package com.ing.contactmanager.controllers.dtos.post.contactType;
+package com.ing.contactmanager.controllers.dtos.request.contactType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +8,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class PostContactTypeDTO {
-    private Integer id;
+public class RequestContactTypeDTO {
+    //private Integer id;
     private UUID uuid;
     @NotBlank(message = "Contact type cannot be null")
     private String contactTypeName;

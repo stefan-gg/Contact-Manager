@@ -1,4 +1,4 @@
-package com.ing.contactmanager.controllers.dtos.post.user;
+package com.ing.contactmanager.controllers.dtos.request.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class PostUserDTO {
-    private Integer id;
+public class RequestUserDTO {
     private UUID uuid;
     @Email
     private String email;

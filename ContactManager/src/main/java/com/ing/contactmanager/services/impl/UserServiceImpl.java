@@ -1,13 +1,12 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.controllers.dtos.get.contact.ContactDTO;
-import com.ing.contactmanager.controllers.dtos.get.user.UserDTO;
-import com.ing.contactmanager.controllers.dtos.post.user.PostUserDTO;
+import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
-import com.ing.contactmanager.services.mappers.get.UserMapper;
-import com.ing.contactmanager.services.mappers.post.PostUserMapper;
+import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +17,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
+public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUserDTO> {
 
     private final UserRepository userRepository;
+
+    private final ContactServiceImpl contactService;
     private final UserMapper userMapper;
-    private final PostUserMapper postUserMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -32,7 +32,7 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDTO getByUuid(UUID uuid) {
+    public ResponseUserDTO getByUuid(UUID uuid) {
         return userMapper.convertToUserDTO(userRepository
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist")));
@@ -40,14 +40,14 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public PostUserDTO createOrUpdate(PostUserDTO postUserDTO, UUID uuid) {
+    public RequestUserDTO createOrUpdate(RequestUserDTO requestUserDTO, UUID uuid) {
         if (uuid == null) {
-            postUserDTO.setUuid(UUID.randomUUID());
-            userRepository.save(postUserMapper.convertPostUserDTOToUser(postUserDTO));
+            requestUserDTO.setUuid(UUID.randomUUID());
+            userRepository.save(userMapper.convertPostUserDTOToUser(requestUserDTO));
 
         } else {
             User user = getUserByUuid(uuid);
-            User updatedUser = postUserMapper.convertPostUserDTOToUser(postUserDTO);
+            User updatedUser = userMapper.convertPostUserDTOToUser(requestUserDTO);
 
             updatedUser.setId(user.getId());
             //updatedUser.setUid(user.getUid());
@@ -56,17 +56,17 @@ public class UserServiceImpl implements CRUDService<UserDTO, PostUserDTO> {
 
         }
 
-        return postUserDTO;
+        return requestUserDTO;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDTO> getAll() {
-        return userMapper.getAllUsers();
+    public List<ResponseUserDTO> getAll() {
+        return userMapper.getAllUsers(userRepository.findAll());
     }
 
-    public List<ContactDTO> getContactsForUser(UUID uuid) {
-        return userMapper.getAllContactsForUser(uuid);
+    public List<ResponseContactDTO> getContactsForUser(UUID uuid) {
+        return userMapper.getAllContactsForUser(uuid, contactService.getContactsByUserUid(uuid));
     }
 
     private User getUserByUuid(UUID uuid) {

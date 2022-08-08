@@ -1,12 +1,11 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
-import com.ing.contactmanager.controllers.dtos.post.contactType.PostContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.request.contactType.RequestContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
 import com.ing.contactmanager.services.CRUDService;
-import com.ing.contactmanager.services.mappers.get.ContactTypeMapper;
-import com.ing.contactmanager.services.mappers.post.PostContactTypeMapper;
+import com.ing.contactmanager.services.mappers.ContactTypeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +16,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostContactTypeDTO> {
+public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDTO, RequestContactTypeDTO> {
 
     private final ContactTypeRepository contactTypeRepository;
     private final ContactTypeMapper contactTypeMapper;
-    private final PostContactTypeMapper postContactTypeMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -31,7 +29,7 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
 
     @Override
     @Transactional(readOnly = true)
-    public ContactTypeDTO getByUuid(UUID uuid) {
+    public ResponseContactTypeDTO getByUuid(UUID uuid) {
         return contactTypeMapper.convertToContactTypeDTO(contactTypeRepository
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist")));
@@ -39,28 +37,28 @@ public class ContactTypeServiceImpl implements CRUDService<ContactTypeDTO, PostC
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public PostContactTypeDTO createOrUpdate(PostContactTypeDTO postContactTypeDTO, UUID uuid) {
+    public RequestContactTypeDTO createOrUpdate(RequestContactTypeDTO requestContactTypeDTO, UUID uuid) {
         if (uuid == null) {
-            postContactTypeDTO.setUuid(UUID.randomUUID());
+            requestContactTypeDTO.setUuid(UUID.randomUUID());
             contactTypeRepository
-                    .save(postContactTypeMapper
-                            .convertPostContactTypeDTOToContactType(postContactTypeDTO));
+                    .save(contactTypeMapper
+                            .convertPostContactTypeDTOToContactType(requestContactTypeDTO));
         } else {
             ContactType contactType = getContactTypeByUuid(uuid);
-            ContactType updatedContactType = postContactTypeMapper.convertPostContactTypeDTOToContactType(postContactTypeDTO);
+            ContactType updatedContactType = contactTypeMapper.convertPostContactTypeDTOToContactType(requestContactTypeDTO);
 
             updatedContactType.setId(contactType.getId());
 
             contactTypeRepository.save(updatedContactType);
         }
 
-        return postContactTypeDTO;
+        return requestContactTypeDTO;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContactTypeDTO> getAll() {
-        return contactTypeMapper.getAllContactTypes();
+    public List<ResponseContactTypeDTO> getAll() {
+        return contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll());
     }
 
     private ContactType getContactTypeByUuid(UUID uuid) {

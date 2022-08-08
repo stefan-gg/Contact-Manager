@@ -1,7 +1,7 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.controllers.dtos.get.contactType.ContactTypeDTO;
-import com.ing.contactmanager.controllers.dtos.post.contactType.PostContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.request.contactType.RequestContactTypeDTO;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,22 +15,22 @@ import java.util.UUID;
 @RequestMapping("/contact_types")
 public class ContactTypeController {
 
-    private final CRUDService<ContactTypeDTO, PostContactTypeDTO> contactTypeServiceDTO;
+    private final CRUDService<ResponseContactTypeDTO, RequestContactTypeDTO> contactTypeServiceDTO;
 
     @GetMapping
-    public ResponseEntity<List<ContactTypeDTO>> getAll() {
+    public ResponseEntity<List<ResponseContactTypeDTO>> getAll() {
         return ResponseEntity.ok(contactTypeServiceDTO.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<PostContactTypeDTO> save(@RequestBody PostContactTypeDTO postContactTypeDTO) {
-        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(postContactTypeDTO, null));
+    public ResponseEntity<RequestContactTypeDTO> save(@RequestBody RequestContactTypeDTO requestContactTypeDTO) {
+        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(requestContactTypeDTO, null));
 
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<PostContactTypeDTO> update(@RequestBody PostContactTypeDTO postContactTypeDTO, @PathVariable UUID uuid) {
-        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(postContactTypeDTO, uuid));
+    public ResponseEntity<RequestContactTypeDTO> update(@RequestBody RequestContactTypeDTO requestContactTypeDTO, @PathVariable UUID uuid) {
+        return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(requestContactTypeDTO, uuid));
     }
 
     @DeleteMapping("/{uuid}")
@@ -39,7 +39,7 @@ public class ContactTypeController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<ContactTypeDTO> getById(@PathVariable UUID uuid) {
+    public ResponseEntity<ResponseContactTypeDTO> getById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(contactTypeServiceDTO.getByUuid(uuid));
     }
 }
