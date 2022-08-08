@@ -8,6 +8,8 @@ import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +64,7 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
     @Override
     @Transactional(readOnly = true)
     public List<ResponseUserDTO> getAll() {
-        return userMapper.getAllUsers(userRepository.findAll());
+        return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc());
     }
 
     public List<ResponseContactDTO> getContactsForUser(UUID uuid) {
@@ -73,5 +75,10 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
         return userRepository
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
+    }
+
+    public List<ResponseUserDTO> getUsersByPage(int pageNum, int numOfElements) {
+        Pageable page = PageRequest.of(pageNum, numOfElements);
+        return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(page));
     }
 }

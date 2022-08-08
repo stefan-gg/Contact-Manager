@@ -13,5 +13,7 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
     Optional<List<Contact>> getContactsByUser_Uid(UUID uuid);
 
+//    List<Contact> findAllByLastName()
+
     void deleteByUid(UUID uuid);
 }

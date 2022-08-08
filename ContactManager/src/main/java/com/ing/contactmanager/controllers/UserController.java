@@ -25,6 +25,11 @@ public class UserController {
         return ResponseEntity.ok(userServiceDTO.getAll());
     }
 
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<List<ResponseUserDTO>> getAllUsersFromPage(@RequestParam("page") int page, @RequestParam int size){
+        return ResponseEntity.ok(userServiceImpl.getUsersByPage(page, size));
+    }
+
     @PostMapping
     public ResponseEntity<RequestUserDTO> save(@RequestBody RequestUserDTO requestUserDTO){
         return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, null));
