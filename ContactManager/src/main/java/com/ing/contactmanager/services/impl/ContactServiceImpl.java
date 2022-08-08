@@ -1,7 +1,7 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
@@ -47,11 +47,15 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     @Transactional(rollbackFor = Exception.class)
     public RequestContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid) {
 
-        User user = userRepository.getUserByEmail(postRequestContactDTO.getUserEmail());
+        User user = userRepository
+                .getUserByEmail(postRequestContactDTO
+                        .getUserEmail())
+                .orElseThrow(() -> new NoSuchElementException("User with passed email does not exist"));
 
         ContactType contactType = contactTypeRepository
                 .getContactTypeByContactTypeName(postRequestContactDTO
-                        .getContactTypeName());
+                        .getContactTypeName())
+                .orElseThrow(() -> new NoSuchElementException("ContactType with passed UUID does not exist"));
 
 //        postRequestContactDTO.setPostUserDTO(postUserMapper.covertUserToPostUserDTO(user));
 //        postRequestContactDTO.setPostContactTypeDTO(postContactTypeMapper
@@ -99,13 +103,13 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
     }
 
-    public List<Contact> getContactsByUserUid(UUID uuid){
+    public List<Contact> getContactsByUserUid(UUID uuid) {
         return contactRepository
                 .getContactsByUser_Uid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
     }
 
-    public List<ResponseContactDTO> getContactsByPage(int pageNum, int numOfElements){
+    public List<ResponseContactDTO> getContactsByPage(int pageNum, int numOfElements) {
         Pageable page = PageRequest.of(pageNum, numOfElements);
         return contactMapper.getAllContacts(contactRepository.findAllByOrderByLastNameAsc(page));
     }
