@@ -11,7 +11,6 @@ import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.ContactMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     public ResponseContactDTO getByUuid(UUID uuid) {
         return contactMapper.convertContactToContactDTO(contactRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist")));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")));
     }
 
     @Override
@@ -50,19 +49,13 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
         User user = userRepository
                 .getUserByEmail(postRequestContactDTO
                         .getUserEmail())
-                .orElseThrow(() -> new NoSuchElementException("User with passed email does not exist"));
+                .orElseThrow(() -> new NoSuchElementException("User with email : " + postRequestContactDTO
+                        .getUserEmail() + "does not exist"));
 
         ContactType contactType = contactTypeRepository
                 .getContactTypeByContactTypeName(postRequestContactDTO
                         .getContactTypeName())
                 .orElseThrow(() -> new NoSuchElementException("ContactType with passed UUID does not exist"));
-
-//        postRequestContactDTO.setPostUserDTO(postUserMapper.covertUserToPostUserDTO(user));
-//        postRequestContactDTO.setPostContactTypeDTO(postContactTypeMapper
-//                .convertContactTypeToPostContactTypeDTO(contactType));
-//
-//        System.out.println(postRequestContactDTO.getPostUserDTO().getId());
-//        System.out.println(postRequestContactDTO.getPostContactTypeDTO().getId());
 
         if (uuid == null) {
 
@@ -100,17 +93,16 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     private Contact getContactByUuid(UUID uuid) {
         return contactRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
     }
 
-    public List<Contact> getContactsByUserUid(UUID uuid) {
+    public List<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
         return contactRepository
-                .getContactsByUser_Uid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
+                .getContactsByUser_Uid(uuid, page)
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")).getContent();
     }
 
-    public List<ResponseContactDTO> getContactsByPage(int pageNum, int numOfElements) {
-        Pageable page = PageRequest.of(pageNum, numOfElements);
-        return contactMapper.getAllContacts(contactRepository.findAllByOrderByLastNameAsc(page));
+    public List<ResponseContactDTO> getContactsByPage(Pageable page) {
+        return contactMapper.getAllContacts(contactRepository.findAllByOrderByLastNameAsc(page).getContent());
     }
 }

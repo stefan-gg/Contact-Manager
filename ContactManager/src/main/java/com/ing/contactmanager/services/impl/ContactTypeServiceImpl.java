@@ -1,7 +1,7 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
 import com.ing.contactmanager.controllers.dtos.request.contactType.RequestContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
 import com.ing.contactmanager.services.CRUDService;
@@ -32,7 +32,7 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
     public ResponseContactTypeDTO getByUuid(UUID uuid) {
         return contactTypeMapper.convertToContactTypeDTO(contactTypeRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist")));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")));
     }
 
     @Override
@@ -64,6 +64,6 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
     private ContactType getContactTypeByUuid(UUID uuid) {
         return contactTypeRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
     }
 }

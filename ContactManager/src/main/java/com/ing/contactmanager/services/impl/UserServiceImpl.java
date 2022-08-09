@@ -1,14 +1,13 @@
 package com.ing.contactmanager.services.impl;
 
+import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
 import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
-import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,7 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
     public ResponseUserDTO getByUuid(UUID uuid) {
         return userMapper.convertToUserDTO(userRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist")));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")));
     }
 
     @Override
@@ -52,7 +51,6 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
             User updatedUser = userMapper.convertPostUserDTOToUser(requestUserDTO);
 
             updatedUser.setId(user.getId());
-            //updatedUser.setUid(user.getUid());
 
             userRepository.save(updatedUser);
 
@@ -67,18 +65,17 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
         return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc());
     }
 
-    public List<ResponseContactDTO> getContactsForUser(UUID uuid) {
-        return userMapper.getAllContactsForUser(uuid, contactService.getContactsByUserUid(uuid));
+    public List<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
+        return userMapper.getAllContactsForUser(uuid, contactService.getContactsByUserUid(uuid, pageable));
     }
 
     private User getUserByUuid(UUID uuid) {
         return userRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with passed UUID does not exist"));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
     }
 
-    public List<ResponseUserDTO> getUsersByPage(int pageNum, int numOfElements) {
-        Pageable page = PageRequest.of(pageNum, numOfElements);
-        return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(page));
+    public List<ResponseUserDTO> getUsersByPage(Pageable pageable) {
+        return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(pageable).getContent());
     }
 }

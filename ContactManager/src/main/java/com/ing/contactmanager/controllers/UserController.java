@@ -6,6 +6,8 @@ import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +29,8 @@ public class UserController {
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<ResponseUserDTO>> getAllUsersFromPage(@RequestParam("page") int page, @RequestParam int size) {
-        return ResponseEntity.ok(userServiceImpl.getUsersByPage(page, size));
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userServiceImpl.getUsersByPage(pageable));
     }
 
     @PostMapping
@@ -41,8 +44,9 @@ public class UserController {
     }
 
     @GetMapping("/get-contacts/{uuid}")
-    public ResponseEntity<List<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid));
+    public ResponseEntity<List<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid, @RequestParam("page") int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid, pageable));
     }
 
     @DeleteMapping("/{uuid}")

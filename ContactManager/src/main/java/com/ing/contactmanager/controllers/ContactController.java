@@ -5,6 +5,9 @@ import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.ContactServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +29,8 @@ public class ContactController {
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<ResponseContactDTO>> getAllContactsFromPage(@RequestParam("page") int page, @RequestParam int size){
-        return ResponseEntity.ok(contactService.getContactsByPage(page, size));
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(contactService.getContactsByPage(pageable));
     }
 
     @PostMapping

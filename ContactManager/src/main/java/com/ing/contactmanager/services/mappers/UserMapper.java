@@ -27,6 +27,7 @@ public class UserMapper {
                 .map(this::convertToUserDTO)
                 .collect(Collectors.toList()));
     }
+
     //
     public List<ResponseContactDTO> getAllContactsForUser(UUID uuid, List<Contact> contacts) {
         List<ResponseContactDTO> contactsDTO = contactMapper.convertContactsToContactsDTO(contacts);
@@ -36,16 +37,15 @@ public class UserMapper {
     public ResponseUserDTO convertToUserDTO(User user) {
         ResponseUserDTO responseUserDTO = new ResponseUserDTO();
 
-//        responseUserDTO.setId(user.getId());
         responseUserDTO.setUuid(user.getUid());
 //        responseUserDTO.setPassword(user.getPassword());
         responseUserDTO.setEmail(user.getEmail());
         responseUserDTO.setFirstName((user.getFirstName()));
         responseUserDTO.setLastName(user.getLastName());
-//        responseUserDTO.setCreatedAt(user.getCreatedAt());
-//        responseUserDTO.setUpdatedAt(user.getUpdatedAt());
+        responseUserDTO.setCreatedAt(user.getCreatedAt());
+        responseUserDTO.setUpdatedAt(user.getUpdatedAt());
         responseUserDTO.setRole(user.getRole().toString());
-        responseUserDTO.setContacts(contactMapper.convertContactsToContactsDTO(user.getContacts()));
+//        responseUserDTO.setContacts(contactMapper.convertContactsToContactsDTO(user.getContacts()));
 
         return responseUserDTO;
     }

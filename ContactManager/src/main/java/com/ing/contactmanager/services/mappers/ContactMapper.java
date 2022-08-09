@@ -1,7 +1,7 @@
 package com.ing.contactmanager.services.mappers;
 
-import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.entities.Contact;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class ContactMapper {
                 .collect(Collectors.toList()));
     }
 
-    public List<ResponseContactDTO> convertContactsToContactsDTO(List<Contact> contacts){
+    public List<ResponseContactDTO> convertContactsToContactsDTO(List<Contact> contacts) {
         return contacts
                 .stream()
                 .map(this::convertContactToContactDTO)
@@ -55,10 +55,6 @@ public class ContactMapper {
         contact.setInfo(postRequestContactDTO.getInfo());
         contact.setAddress(postRequestContactDTO.getAddress());
         contact.setPhoneNumber(postRequestContactDTO.getPhoneNumber());
-        //contact.setContactType(postContactTypeMapper
-        //        .convertPostContactTypeDTOToContactType(postRequestContactDTO.getPostContactTypeDTO()));
-        //contact.setUser(postUserMapper
-        //        .convertPostUserDTOToUser(postRequestContactDTO.getPostUserDTO()));
 
         return contact;
     }
