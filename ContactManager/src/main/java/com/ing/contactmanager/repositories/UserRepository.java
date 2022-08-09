@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> getUserByEmail(String email);
 
     Page<User> findAllByOrderByLastNameAsc(Pageable pageable);
+
+    Optional<User> findByEmail(String email);
 }

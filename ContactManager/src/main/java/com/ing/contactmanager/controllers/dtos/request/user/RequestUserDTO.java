@@ -18,20 +18,20 @@ public class RequestUserDTO {
     @Size(max = 100)
     private String email;
 
-    @NotBlank(message = "Password cannot be null")
-    @Size(max = 255)
+    @NotBlank()
+    @Size(max = 255, message = "Password cannot be null")
     private String password;
 
-    @NotBlank(message = "First name cannot be null")
-    @Size(max = 50)
+    @NotBlank()
+    @Size(max = 50, message = "First name cannot be null")
     private String firstName;
 
-    @NotBlank(message = "Last name cannot be null")
-    @Size(max = 50)
+    @NotBlank()
+    @Size(max = 50, message = "Last name cannot be null")
     private String lastName;
 
-    @NotBlank(message = "Role cannot be null")
+    @NotBlank()
     @Pattern(regexp = "ROLE_ADMIN|ROLE_USER")
-    @Size(max = 20)
+    @Size(max = 20, message = "Role cannot be null")
     private String role;
 }

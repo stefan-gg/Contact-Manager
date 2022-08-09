@@ -13,7 +13,7 @@ public class RequestContactTypeDTO {
 
     private UUID uuid;
 
-    @NotBlank(message = "Contact type cannot be null")
-    @Size(max = 50)
+    @NotBlank()
+    @Size(max = 50, message = "Contact type cannot be null")
     private String contactTypeName;
 }

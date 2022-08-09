@@ -16,12 +16,12 @@ public class RequestContactDTO {
     @Size(max = 100)
     private String email;
 
-    @Size(max = 50)
-    @NotBlank(message = "Contact's first name cannot be null")
+    @Size(max = 50, message = "Contact's first name cannot be null")
+    @NotBlank()
     private String firstName;
 
-    @Size(max = 50)
-    @NotBlank(message = "Contact's last name cannot be null")
+    @Size(max = 50, message = "Contact's last name cannot be null")
+    @NotBlank()
     private String lastName;
 
     @Size(max = 100)
@@ -30,8 +30,8 @@ public class RequestContactDTO {
     @Size(max = 100)
     private String address;
 
-    @NotBlank(message = "Phone number cannot be null")
-    @Size(max = 50)
+    @NotBlank()
+    @Size(max = 50, message = "Phone number cannot be null")
     private String phoneNumber;
 
     //@NotBlank(message = "User cannot be null")

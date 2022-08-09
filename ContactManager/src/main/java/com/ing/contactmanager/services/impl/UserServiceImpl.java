@@ -21,7 +21,6 @@ import java.util.UUID;
 public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUserDTO> {
 
     private final UserRepository userRepository;
-
     private final ContactServiceImpl contactService;
     private final UserMapper userMapper;
 
@@ -77,5 +76,10 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
 
     public List<ResponseUserDTO> getUsersByPage(Pageable pageable) {
         return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(pageable).getContent());
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.getUserByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User with email : " + email + " does not exist"));
     }
 }
