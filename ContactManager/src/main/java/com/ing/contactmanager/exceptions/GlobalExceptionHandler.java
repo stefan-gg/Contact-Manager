@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Object> handleNoSuchEntityException(NoSuchElementException ex){
+    public ResponseEntity<Object> handleNoSuchEntityException(NoSuchElementException ex) {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(PSQLException.class)
-    public ResponseEntity<Object> handleSQLException(PSQLException psqlException){
+    public ResponseEntity<Object> handleSQLException(PSQLException psqlException) {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

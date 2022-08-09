@@ -13,14 +13,14 @@ import java.util.UUID;
 public class RequestContactDTO {
     private UUID uuid;
     @Email
-    @Size(max = 100)
+    @Size(max = 100, message = "Maximum email length is 100")
     private String email;
 
-    @Size(max = 50, message = "Contact's first name cannot be null")
+    @Size(max = 50, message = "Contact's first name cannot be null or greater than 50")
     @NotBlank()
     private String firstName;
 
-    @Size(max = 50, message = "Contact's last name cannot be null")
+    @Size(max = 50, message = "Contact's last name cannot be null or greater than 50")
     @NotBlank()
     private String lastName;
 
@@ -31,7 +31,7 @@ public class RequestContactDTO {
     private String address;
 
     @NotBlank()
-    @Size(max = 50, message = "Phone number cannot be null")
+    @Size(max = 50, message = "Phone number cannot be null or greater than 50")
     private String phoneNumber;
 
     //@NotBlank(message = "User cannot be null")

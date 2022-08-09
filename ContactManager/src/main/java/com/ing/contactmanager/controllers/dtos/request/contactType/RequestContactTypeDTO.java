@@ -14,6 +14,6 @@ public class RequestContactTypeDTO {
     private UUID uuid;
 
     @NotBlank()
-    @Size(max = 50, message = "Contact type cannot be null")
+    @Size(max = 50, message = "Contact type cannot be null or greater than 50")
     private String contactTypeName;
 }
