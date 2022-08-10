@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -30,18 +31,21 @@ public class User {
     private UUID uid;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Contact> contacts;
 
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
+    @Size(max = 255, message = "Password cannot be null or greater than 255")
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
+    @Size(max = 50, message = "First name cannot be null or greater than 50")
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
+    @Size(max = 50, message = "Last name cannot be null or greater than 50")
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 

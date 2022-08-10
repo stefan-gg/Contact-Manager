@@ -1,6 +1,13 @@
 //package com.ing.contactmanager.security;
 //
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //
 //@EnableWebSecurity
 //@RequiredArgsConstructor
@@ -17,12 +24,7 @@
 //    protected void configure(HttpSecurity http) throws Exception {
 ////        super.configure(http);
 //        http.authorizeRequests()
-//                .antMatchers("/admin/*").hasRole("ADMIN")
-//                .antMatchers("/course/*").hasRole("AUTHOR")
-//                .antMatchers("/order/*").hasRole("USER")
-//                .antMatchers("/*").hasAnyRole("USER", "AUTHOR", "ADMIN")
-//                .antMatchers("/view/*").hasAnyRole("USER", "AUTHOR")
-//                .antMatchers("/register").anonymous()
+//                .antMatchers("/**").hasRole("ADMIN")
 //                .and()
 //                .formLogin();
 //    }

@@ -23,12 +23,12 @@ public class ContactController {
     private final ContactServiceImpl contactService;
 
     @GetMapping
-    public ResponseEntity<List<ResponseContactDTO>> getAll(){
+    public ResponseEntity<Page<ResponseContactDTO>> getAll(){
         return ResponseEntity.ok(contactServiceDTO.getAll());
     }
 
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<List<ResponseContactDTO>> getAllContactsFromPage(@RequestParam("page") int page, @RequestParam int size){
+    public ResponseEntity<Page<ResponseContactDTO>> getAllContactsFromPage(@RequestParam("page") int page, @RequestParam int size){
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(contactService.getContactsByPage(pageable));
     }

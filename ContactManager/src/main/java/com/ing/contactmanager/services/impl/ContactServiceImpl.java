@@ -11,6 +11,8 @@ import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.ContactMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,8 +88,8 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseContactDTO> getAll() {
-        return contactMapper.getAllContacts(contactRepository.findAll());
+    public Page<ResponseContactDTO> getAll() {
+        return new PageImpl<>(contactMapper.getAllContacts(contactRepository.findAll()));
     }
 
     private Contact getContactByUuid(UUID uuid) {
@@ -96,13 +98,16 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
     }
 
-    public List<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
-        return contactRepository
+    public Page<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
+        return new PageImpl<>(contactRepository
                 .getContactsByUser_Uid(uuid, page)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")).getContent();
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"))
+                .getContent());
     }
 
-    public List<ResponseContactDTO> getContactsByPage(Pageable page) {
-        return contactMapper.getAllContacts(contactRepository.findAllByOrderByLastNameAsc(page).getContent());
+    public Page<ResponseContactDTO> getContactsByPage(Pageable page) {
+        return new PageImpl<>(contactMapper
+                .getAllContacts(contactRepository
+                        .findAllByOrderByLastNameAsc(page).getContent()));
     }
 }

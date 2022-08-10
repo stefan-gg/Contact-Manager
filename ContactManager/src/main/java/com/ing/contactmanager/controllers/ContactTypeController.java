@@ -4,6 +4,7 @@ import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseCont
 import com.ing.contactmanager.controllers.dtos.request.contactType.RequestContactTypeDTO;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +13,13 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/contact_types")
+@RequestMapping("/contact-types")
 public class ContactTypeController {
 
     private final CRUDService<ResponseContactTypeDTO, RequestContactTypeDTO> contactTypeServiceDTO;
 
     @GetMapping
-    public ResponseEntity<List<ResponseContactTypeDTO>> getAll() {
+    public ResponseEntity<Page<ResponseContactTypeDTO>> getAll() {
         return ResponseEntity.ok(contactTypeServiceDTO.getAll());
     }
 

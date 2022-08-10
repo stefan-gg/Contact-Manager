@@ -7,10 +7,11 @@ import com.ing.contactmanager.repositories.ContactTypeRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.ContactTypeMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -57,8 +58,8 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseContactTypeDTO> getAll() {
-        return contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll());
+    public Page<ResponseContactTypeDTO> getAll() {
+        return new PageImpl<>(contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll()));
     }
 
     private ContactType getContactTypeByUuid(UUID uuid) {

@@ -8,6 +8,8 @@ import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,12 +62,14 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseUserDTO> getAll() {
-        return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc());
+    public Page<ResponseUserDTO> getAll() {
+        return new PageImpl<>(userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc()));
     }
 
-    public List<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
-        return userMapper.getAllContactsForUser(uuid, contactService.getContactsByUserUid(uuid, pageable));
+    public Page<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
+        return new PageImpl<>(userMapper
+                .getAllContactsForUser(uuid, contactService.getContactsByUserUid(uuid, pageable)
+                        .getContent()));
     }
 
     private User getUserByUuid(UUID uuid) {
@@ -74,8 +78,8 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
     }
 
-    public List<ResponseUserDTO> getUsersByPage(Pageable pageable) {
-        return userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(pageable).getContent());
+    public Page<ResponseUserDTO> getUsersByPage(Pageable pageable) {
+        return new PageImpl<>(userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(pageable).getContent()));
     }
 
     public User getUserByEmail(String email) {

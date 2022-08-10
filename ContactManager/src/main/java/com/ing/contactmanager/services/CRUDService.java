@@ -1,6 +1,7 @@
 package com.ing.contactmanager.services;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+
 import java.util.UUID;
 
 public interface CRUDService<T, U> {
@@ -10,5 +11,5 @@ public interface CRUDService<T, U> {
 
     U createOrUpdate(U object, UUID uuid);
 
-    List<T> getAll();
+    Page<T> getAll();
 }

@@ -11,7 +11,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RequestContactDTO {
+
     private UUID uuid;
+
     @Email
     @Size(max = 100, message = "Maximum email length is 100")
     private String email;
