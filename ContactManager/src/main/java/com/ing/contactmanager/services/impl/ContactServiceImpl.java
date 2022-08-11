@@ -129,6 +129,14 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
     }
 
+    public boolean compareTwoUsers(User loggedUser, User user){
+        if (loggedUser.getId() == user.getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+            return true;
+        } else {
+            throw new RuntimeException("Method denied");
+        }
+    }
+
     public Page<ResponseContactDTO> getContactsByPage(Pageable page) {
         return new PageImpl<>(contactMapper
                 .getAllContacts(contactRepository

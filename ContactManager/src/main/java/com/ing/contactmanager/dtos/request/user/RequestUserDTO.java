@@ -19,19 +19,19 @@ public class RequestUserDTO {
     private String email;
 
     @NotBlank()
-    @Size(max = 255, message = "Password cannot be null or greater than 255")
+    @Size(max = 255)
     private String password;
 
     @NotBlank()
-    @Size(max = 50, message = "First name cannot be null or greater than 50")
+    @Size(max = 50)
     private String firstName;
 
     @NotBlank()
-    @Size(max = 50, message = "Last name cannot be null or greater than 50")
+    @Size(max = 50)
     private String lastName;
 
     @NotBlank()
     @Pattern(regexp = "ROLE_ADMIN|ROLE_USER")
-    @Size(max = 20, message = "Role cannot be null or greater than 20")
+    @Size(max = 20)
     private String role;
 }
