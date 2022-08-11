@@ -21,15 +21,18 @@ public class WebSecurityConfigurationNotDeprecated {
                 .csrf()
                 .disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/users/").permitAll()
                 .antMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                 .antMatchers("/contacts/**").hasRole("ADMIN")
                 .antMatchers("/contact-types/**").hasRole("ADMIN")
-                //.antMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/users/get-contacts/{uuid}").hasAnyRole("USER", "ADMIN")
-                //.antMatchers(HttpMethod.DELETE, "/users/{uuid}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/users/{uuid}/contacts").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/contacts").hasRole("USER")
+                .antMatchers(HttpMethod.PUT, "/contacts").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/contacts").hasRole("USER")
+                .anyRequest()
+                .authenticated()
                 .and()
                 .httpBasic();
-
 
         return http.build();
     }

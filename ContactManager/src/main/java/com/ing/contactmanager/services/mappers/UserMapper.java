@@ -7,6 +7,7 @@ import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.entities.enums.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     private final ContactMapper contactMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public List<ResponseUserDTO> getAllUsers(List<User> users) {
 
@@ -55,7 +57,7 @@ public class UserMapper {
 
         user.setUid(requestUserDTO.getUuid());
         user.setEmail(requestUserDTO.getEmail());
-        user.setPassword(requestUserDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(requestUserDTO.getPassword()));
         user.setFirstName(requestUserDTO.getFirstName());
         user.setLastName(requestUserDTO.getLastName());
         user.setRole(Role.valueOf(requestUserDTO.getRole()));

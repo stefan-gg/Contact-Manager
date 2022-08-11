@@ -1,18 +1,16 @@
 package com.ing.contactmanager.controllers;
 
+import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
 import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
-import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,8 +27,7 @@ public class UserController {
     }
 
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<Page<ResponseUserDTO>> getAllUsersFromPage(@RequestParam("page") int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public ResponseEntity<Page<ResponseUserDTO>> getAllUsersFromPage(Pageable pageable) {
         return ResponseEntity.ok(userServiceImpl.getUsersByPage(pageable));
     }
 
@@ -41,12 +38,12 @@ public class UserController {
 
     @PutMapping("/{uuid}")
     public ResponseEntity<RequestUserDTO> update(@RequestBody RequestUserDTO requestUserDTO, @PathVariable UUID uuid) {
+
         return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, uuid));
     }
 
-    @GetMapping("/get-contacts/{uuid}")
-    public ResponseEntity<Page<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid, @RequestParam("page") int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    @GetMapping("/{uuid}/contacts")
+    public ResponseEntity<Page<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid, Pageable pageable) {
         return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid, pageable));
     }
 

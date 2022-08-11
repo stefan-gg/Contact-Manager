@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -56,6 +55,7 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
             userRepository.save(updatedUser);
 
         }
+        requestUserDTO.setPassword(null);
 
         return requestUserDTO;
     }

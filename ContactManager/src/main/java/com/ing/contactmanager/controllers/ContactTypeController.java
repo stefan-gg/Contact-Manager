@@ -1,14 +1,13 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
 import com.ing.contactmanager.controllers.dtos.request.contactType.RequestContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
 import com.ing.contactmanager.services.CRUDService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
