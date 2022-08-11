@@ -1,7 +1,7 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
-import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
@@ -25,27 +25,50 @@ import java.util.UUID;
 public class ContactServiceImpl implements CRUDService<ResponseContactDTO, RequestContactDTO> {
 
     private final ContactRepository contactRepository;
-    private final UserRepository userRepository;
-    private final ContactTypeRepository contactTypeRepository;
     private final ContactMapper contactMapper;
+    private final UserRepository userRepository;
+    private final UserServiceImpl userService;
+    private final ContactTypeRepository contactTypeRepository;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
-        contactRepository.deleteByUid(uuid);
+
+        User loggedUser = userService.getLoggedInUser();
+
+        Contact contact = contactRepository
+                .findByUid(uuid)
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
+
+        if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+            contactRepository.deleteByUid(uuid);
+        } else {
+            throw new RuntimeException("Method denied");
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public ResponseContactDTO getByUuid(UUID uuid) {
-        return contactMapper.convertContactToContactDTO(contactRepository
+
+        User loggedUser = userService.getLoggedInUser();
+
+        Contact contact = contactRepository
                 .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")));
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
+
+        if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+            return contactMapper.convertContactToContactDTO(contact);
+        } else {
+            throw new RuntimeException("Method denied");
+        }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RequestContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid) {
+        User loggedUser = userService.getLoggedInUser();
 
         User user = userRepository
                 .getUserByEmail(postRequestContactDTO
@@ -66,20 +89,29 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
             contact.setContactType(contactType);
             contact.setUser(user);
 
-            contactRepository.save(contact);
-            postRequestContactDTO.setUuid(contact.getUid());
+            if (contact.getUser().getId() == loggedUser.getId() && !loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+                contactRepository.save(contact);
+                postRequestContactDTO.setUuid(contact.getUid());
+            } else {
+                throw new RuntimeException("Method denied");
+            }
 
         } else {
 
             Contact contact = getContactByUuid(uuid);
-            Contact updatedContact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
-            updatedContact.setUser(user);
-            updatedContact.setContactType(contactType);
-            updatedContact.setId(contact.getId());
 
-            contactRepository.save(updatedContact);
+            if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+                Contact updatedContact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
+                updatedContact.setUser(user);
+                updatedContact.setContactType(contactType);
+                updatedContact.setId(contact.getId());
 
-            postRequestContactDTO.setUuid(uuid);
+                contactRepository.save(updatedContact);
+
+                postRequestContactDTO.setUuid(uuid);
+            } else {
+                throw new RuntimeException("Method denied");
+            }
         }
 
         return postRequestContactDTO;
@@ -95,13 +127,6 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
         return contactRepository
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
-    }
-
-    public Page<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
-        return new PageImpl<>(contactRepository
-                .getContactsByUser_Uid(uuid, page)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"))
-                .getContent());
     }
 
     public Page<ResponseContactDTO> getContactsByPage(Pageable page) {

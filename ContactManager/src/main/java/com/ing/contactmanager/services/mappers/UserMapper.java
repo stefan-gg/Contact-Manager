@@ -1,8 +1,8 @@
 package com.ing.contactmanager.services.mappers;
 
-import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
-import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
+import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
 import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.entities.enums.Role;

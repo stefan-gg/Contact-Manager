@@ -1,9 +1,11 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
-import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
+import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
+import com.ing.contactmanager.repositories.ContactRepository;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.UserMapper;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +27,7 @@ import java.util.UUID;
 public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUserDTO> {
 
     private final UserRepository userRepository;
-    private final ContactServiceImpl contactService;
+    private final ContactRepository contactRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -42,18 +47,25 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RequestUserDTO createOrUpdate(RequestUserDTO requestUserDTO, UUID uuid) {
+
         if (uuid == null) {
             requestUserDTO.setUuid(UUID.randomUUID());
             userRepository.save(userMapper.convertPostUserDTOToUser(requestUserDTO));
 
         } else {
+            User loggedUser = getLoggedInUser();
+
             User user = getUserByUuid(uuid);
-            User updatedUser = userMapper.convertPostUserDTOToUser(requestUserDTO);
 
-            updatedUser.setId(user.getId());
+            if (user.getId() == loggedUser.getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+                User updatedUser = userMapper.convertPostUserDTOToUser(requestUserDTO);
 
-            userRepository.save(updatedUser);
+                updatedUser.setId(user.getId());
 
+                userRepository.save(updatedUser);
+            } else {
+                throw new RuntimeException("Login required.");
+            }
         }
         requestUserDTO.setPassword(null);
 
@@ -67,9 +79,18 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
     }
 
     public Page<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
-        return new PageImpl<>(userMapper
-                .getAllContactsForUser(uuid, contactService.getContactsByUserUid(uuid, pageable)
-                        .getContent()));
+
+        User loggedUser = getLoggedInUser();
+
+        User user = getUserByUuid(uuid);
+
+        if (user.getId() == loggedUser.getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+            return new PageImpl<>(userMapper
+                    .getAllContactsForUser(uuid, getContactsByUserUid(uuid, pageable)
+                            .getContent()));
+        } else {
+            throw new RuntimeException("Access denied");
+        }
     }
 
     private User getUserByUuid(UUID uuid) {
@@ -82,8 +103,25 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
         return new PageImpl<>(userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc(pageable).getContent()));
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email)
+    public User getLoggedInUser() {
+        String userEmail = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            userEmail = authentication.getName();
+        } else {
+            throw new RuntimeException("Login required.");
+        }
+
+        final String email = userEmail;
+        return userRepository.getUserByEmail(userEmail)
                 .orElseThrow(() -> new NoSuchElementException("User with email : " + email + " does not exist"));
+    }
+
+    public Page<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
+        return new PageImpl<>(contactRepository
+                .getContactsByUser_Uid(uuid, page)
+                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"))
+                .getContent());
     }
 }

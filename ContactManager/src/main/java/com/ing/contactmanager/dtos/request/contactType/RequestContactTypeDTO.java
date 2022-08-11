@@ -1,4 +1,4 @@
-package com.ing.contactmanager.controllers.dtos.request.contactType;
+package com.ing.contactmanager.dtos.request.contactType;
 
 import lombok.Getter;
 import lombok.Setter;

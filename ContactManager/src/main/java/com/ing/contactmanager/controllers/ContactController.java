@@ -1,7 +1,7 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
-import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.ContactServiceImpl;
 import lombok.RequiredArgsConstructor;
