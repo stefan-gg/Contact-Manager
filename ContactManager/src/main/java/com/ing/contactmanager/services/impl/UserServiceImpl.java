@@ -110,7 +110,7 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             userEmail = authentication.getName();
         } else {
-            throw new RuntimeException("Login required.");
+            throw new RuntimeException("Method denied");
         }
 
         final String email = userEmail;
