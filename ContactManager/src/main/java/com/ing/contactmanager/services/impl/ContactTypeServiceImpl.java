@@ -9,6 +9,7 @@ import com.ing.contactmanager.services.mappers.ContactTypeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +51,8 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
             return contactTypeMapper.convertToContactTypeDTO(contactType);
         } else {
             ContactType contactType = getContactTypeByUuid(uuid);
-            ContactType updatedContactType = contactTypeMapper.convertPostContactTypeDTOToContactType(requestContactTypeDTO);
+            ContactType updatedContactType =
+                    contactTypeMapper.convertPostContactTypeDTOToContactType(requestContactTypeDTO);
 
             updatedContactType.setId(contactType.getId());
 
@@ -60,9 +62,14 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
         }
     }
 
+    @Transactional(readOnly = true)
+    public Page<ResponseContactTypeDTO> getAll() {
+        return new PageImpl<>(
+                contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll()));
+    }
+
     private ContactType getContactTypeByUuid(UUID uuid) {
-        return contactTypeRepository
-                .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
+        return contactTypeRepository.findByUid(uuid).orElseThrow(() -> new NoSuchElementException(
+                "Element with UUID : " + uuid.toString() + " does not exist"));
     }
 }

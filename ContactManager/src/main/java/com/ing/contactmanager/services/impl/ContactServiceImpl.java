@@ -25,11 +25,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ContactServiceImpl implements CRUDService<ResponseContactDTO, RequestContactDTO> {
 
+    private final UserServiceImpl userService;
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     private final ContactRepository contactRepository;
     private final ContactMapper contactMapper;
     private final UserRepository userRepository;
-    private final UserServiceImpl userService;
     private final ContactTypeRepository contactTypeRepository;
 
 
@@ -57,9 +57,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
 
         User user = getUser(postRequestContactDTO);
 
-        ContactType contactType = contactTypeRepository.getContactTypeByContactTypeName(
-                postRequestContactDTO.getContactTypeName()).orElseThrow(
-                () -> new EntityNotFoundException("ContactType with passed Name does not exist"));
+        ContactType contactType = getContactType(postRequestContactDTO);
 
         if (uuid == null) {
 
@@ -88,18 +86,19 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
         }
     }
 
+    private ContactType getContactType(RequestContactDTO postRequestContactDTO) {
+        return contactTypeRepository.getContactTypeByContactTypeName(
+                postRequestContactDTO.getContactTypeName()).orElseThrow(
+                () -> new EntityNotFoundException("ContactType with passed Name does not exist"));
+    }
+
     private User getUser(RequestContactDTO postRequestContactDTO) {
-        return userRepository
-                .getUserByEmail(postRequestContactDTO
-                        .getUserEmail())
-                .orElseThrow(() -> new NoSuchElementException("User with email : " + postRequestContactDTO
-                        .getUserEmail() + "does not exist"));
+        return userService.getUserByEmail(postRequestContactDTO.getUserEmail());
     }
 
     private Contact getContactByUuid(UUID uuid) {
-        return contactRepository
-                .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
+        return contactRepository.findByUid(uuid).orElseThrow(() -> new NoSuchElementException(
+                "Element with UUID : " + uuid.toString() + " does not exist"));
     }
 
     public boolean compareTwoUsers(User loggedUser, User user){
@@ -111,7 +110,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     }
 
     @Transactional(readOnly = true)
-    public Page<ResponseContactDTO> getContactsByPage(Pageable page) {
+    public Page<ResponseContactDTO> getContacts(Pageable page) {
         return new PageImpl<>(contactMapper
                 .getAllContacts(contactRepository
                         .findAllByOrderByLastNameAsc(page).getContent()));

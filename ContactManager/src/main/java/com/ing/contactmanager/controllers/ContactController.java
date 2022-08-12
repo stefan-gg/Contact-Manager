@@ -21,8 +21,8 @@ public class ContactController {
     private final ContactServiceImpl contactService;
 
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<Page<ResponseContactDTO>> getAllContactsFromPage(Pageable pageable){
-        return ResponseEntity.ok(contactService.getContactsByPage(pageable));
+    public ResponseEntity<Page<ResponseContactDTO>> getAllContacts(Pageable pageable){
+        return ResponseEntity.ok(contactService.getContacts(pageable));
     }
 
     @PostMapping

@@ -59,7 +59,6 @@ public class UserController {
     @DeleteMapping("/{uuid}")
     public void deleteById(@PathVariable UUID uuid) throws AccessDeniedException {
         userServiceDTO.deleteByUuid(uuid);
-
     }
 
     @GetMapping("/{uuid}")
