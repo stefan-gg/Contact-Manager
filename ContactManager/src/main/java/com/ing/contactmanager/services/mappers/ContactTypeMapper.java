@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ContactTypeMapper {
 
-//    private final ContactMapper contactMapper;
-
     public List<ResponseContactTypeDTO> getAllContactTypes(List<ContactType> contactTypes) {
         return (contactTypes
                 .stream()
@@ -27,7 +25,6 @@ public class ContactTypeMapper {
 
         responseContactTypeDTO.setUuid(contactType.getUid());
         responseContactTypeDTO.setContactTypeName(contactType.getContactTypeName());
-//        responseContactTypeDTO.setContacts(contactMapper.convertContactsToContactsDTO(contactType.getContacts()));
 
         return responseContactTypeDTO;
     }

@@ -9,7 +9,7 @@ public interface CRUDService<T, U> {
 
     T getByUuid(UUID uuid);
 
-    U createOrUpdate(U object, UUID uuid);
+    T createOrUpdate(U object, UUID uuid);
 
     Page<T> getAll();
 }

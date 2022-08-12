@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ContactServiceImpl implements CRUDService<ResponseContactDTO, RequestContactDTO> {
 
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
     private final ContactRepository contactRepository;
     private final ContactMapper contactMapper;
     private final UserRepository userRepository;
@@ -41,7 +43,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
 
-        if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+        if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
             contactRepository.deleteByUid(uuid);
         } else {
             throw new RuntimeException("Method denied");
@@ -58,7 +60,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
                 .findByUid(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
 
-        if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+        if (loggedUser.getId().equals(contact.getUser().getId()) || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
             return contactMapper.convertContactToContactDTO(contact);
         } else {
             throw new RuntimeException("Method denied");
@@ -67,19 +69,15 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RequestContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid) {
+    public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid) {
         User loggedUser = userService.getLoggedInUser();
 
-        User user = userRepository
-                .getUserByEmail(postRequestContactDTO
-                        .getUserEmail())
-                .orElseThrow(() -> new NoSuchElementException("User with email : " + postRequestContactDTO
-                        .getUserEmail() + "does not exist"));
+        User user = getUser(postRequestContactDTO);
 
         ContactType contactType = contactTypeRepository
                 .getContactTypeByContactTypeName(postRequestContactDTO
                         .getContactTypeName())
-                .orElseThrow(() -> new NoSuchElementException("ContactType with passed UUID does not exist"));
+                .orElseThrow(() -> new EntityNotFoundException("ContactType with passed UUID does not exist"));
 
         if (uuid == null) {
 
@@ -89,9 +87,9 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
             contact.setContactType(contactType);
             contact.setUser(user);
 
-            if (contact.getUser().getId() == loggedUser.getId() && !loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+            if (contact.getUser().getId() == loggedUser.getId() && !loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
                 contactRepository.save(contact);
-                postRequestContactDTO.setUuid(contact.getUid());
+                return contactMapper.convertContactToContactDTO(contact);
             } else {
                 throw new RuntimeException("Method denied");
             }
@@ -100,7 +98,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
 
             Contact contact = getContactByUuid(uuid);
 
-            if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+            if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
                 Contact updatedContact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
                 updatedContact.setUser(user);
                 updatedContact.setContactType(contactType);
@@ -108,13 +106,19 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
 
                 contactRepository.save(updatedContact);
 
-                postRequestContactDTO.setUuid(uuid);
+                return contactMapper.convertContactToContactDTO(updatedContact);
             } else {
                 throw new RuntimeException("Method denied");
             }
         }
+    }
 
-        return postRequestContactDTO;
+    private User getUser(RequestContactDTO postRequestContactDTO) {
+        return userRepository
+                .getUserByEmail(postRequestContactDTO
+                        .getUserEmail())
+                .orElseThrow(() -> new NoSuchElementException("User with email : " + postRequestContactDTO
+                        .getUserEmail() + "does not exist"));
     }
 
     @Override
@@ -130,7 +134,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     }
 
     public boolean compareTwoUsers(User loggedUser, User user){
-        if (loggedUser.getId() == user.getId() || loggedUser.getRole().toString().equals("ROLE_ADMIN")) {
+        if (loggedUser.getId() == user.getId() || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
             return true;
         } else {
             throw new RuntimeException("Method denied");

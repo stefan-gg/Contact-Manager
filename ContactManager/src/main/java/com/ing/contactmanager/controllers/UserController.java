@@ -32,12 +32,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<RequestUserDTO> save(@RequestBody RequestUserDTO requestUserDTO) {
+    public ResponseEntity<ResponseUserDTO> save(@RequestBody RequestUserDTO requestUserDTO) {
         return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, null));
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<RequestUserDTO> update(@RequestBody RequestUserDTO requestUserDTO, @PathVariable UUID uuid) {
+    public ResponseEntity<ResponseUserDTO> update(@RequestBody RequestUserDTO requestUserDTO, @PathVariable UUID uuid) {
 
         return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, uuid));
     }

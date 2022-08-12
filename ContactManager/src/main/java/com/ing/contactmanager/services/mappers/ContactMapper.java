@@ -30,18 +30,13 @@ public class ContactMapper {
     public ResponseContactDTO convertContactToContactDTO(Contact contact) {
         ResponseContactDTO responseContactDTO = new ResponseContactDTO();
 
-//        responseContactDTO.setId(contact.getId());
         responseContactDTO.setUuid(contact.getUid());
         responseContactDTO.setEmail(contact.getEmail());
         responseContactDTO.setFirstName((contact.getFirstName()));
         responseContactDTO.setLastName(contact.getLastName());
-//        responseContactDTO.setCreatedAt(contact.getCreatedAt());
-//        responseContactDTO.setUpdatedAt(contact.getUpdatedAt());
-//        responseContactDTO.setContactType(contact.getContactType());
         responseContactDTO.setAddress(contact.getAddress());
         responseContactDTO.setInfo(contact.getInfo());
         responseContactDTO.setPhoneNumber(contact.getPhoneNumber());
-//        responseContactDTO.setUser(contact.getUser());
 
         return responseContactDTO;
     }

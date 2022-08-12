@@ -23,14 +23,12 @@ public class UserMapper {
 
     public List<ResponseUserDTO> getAllUsers(List<User> users) {
 
-
         return (users
                 .stream()
                 .map(this::convertToUserDTO)
                 .collect(Collectors.toList()));
     }
 
-    //
     public List<ResponseContactDTO> getAllContactsForUser(UUID uuid, List<Contact> contacts) {
         List<ResponseContactDTO> contactsDTO = contactMapper.convertContactsToContactsDTO(contacts);
         return contactsDTO;
@@ -40,14 +38,12 @@ public class UserMapper {
         ResponseUserDTO responseUserDTO = new ResponseUserDTO();
 
         responseUserDTO.setUuid(user.getUid());
-//        responseUserDTO.setPassword(user.getPassword());
         responseUserDTO.setEmail(user.getEmail());
         responseUserDTO.setFirstName((user.getFirstName()));
         responseUserDTO.setLastName(user.getLastName());
         responseUserDTO.setCreatedAt(user.getCreatedAt());
         responseUserDTO.setUpdatedAt(user.getUpdatedAt());
         responseUserDTO.setRole(user.getRole().toString());
-//        responseUserDTO.setContacts(contactMapper.convertContactsToContactsDTO(user.getContacts()));
 
         return responseUserDTO;
     }

@@ -46,12 +46,16 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RequestUserDTO createOrUpdate(RequestUserDTO requestUserDTO, UUID uuid) {
+    public ResponseUserDTO createOrUpdate(RequestUserDTO requestUserDTO, UUID uuid) {
 
         if (uuid == null) {
             requestUserDTO.setUuid(UUID.randomUUID());
-            userRepository.save(userMapper.convertPostUserDTOToUser(requestUserDTO));
 
+            User user = userMapper.convertPostUserDTOToUser(requestUserDTO);
+
+            userRepository.save(user);
+
+            return userMapper.convertToUserDTO(user);
         } else {
             User loggedUser = getLoggedInUser();
 
@@ -63,13 +67,12 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
                 updatedUser.setId(user.getId());
 
                 userRepository.save(updatedUser);
+
+                return userMapper.convertToUserDTO(updatedUser);
             } else {
                 throw new RuntimeException("Login required.");
             }
         }
-        requestUserDTO.setPassword(null);
-
-        return requestUserDTO;
     }
 
     @Override

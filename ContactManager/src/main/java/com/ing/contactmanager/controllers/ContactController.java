@@ -31,12 +31,12 @@ public class ContactController {
     }
 
     @PostMapping
-    public ResponseEntity<RequestContactDTO> save(@RequestBody RequestContactDTO postRequestContactDTO){
+    public ResponseEntity<ResponseContactDTO> save(@RequestBody RequestContactDTO postRequestContactDTO){
         return ResponseEntity.ok(contactServiceDTO.createOrUpdate(postRequestContactDTO, null));
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<RequestContactDTO> update(@RequestBody RequestContactDTO postRequestContactDTO, @PathVariable UUID uuid){
+    public ResponseEntity<ResponseContactDTO> update(@RequestBody RequestContactDTO postRequestContactDTO, @PathVariable UUID uuid){
         return ResponseEntity.ok(contactServiceDTO.createOrUpdate(postRequestContactDTO, uuid));
     }
 

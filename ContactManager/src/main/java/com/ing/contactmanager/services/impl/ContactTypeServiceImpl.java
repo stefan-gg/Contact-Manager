@@ -38,12 +38,16 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RequestContactTypeDTO createOrUpdate(RequestContactTypeDTO requestContactTypeDTO, UUID uuid) {
+    public ResponseContactTypeDTO createOrUpdate(RequestContactTypeDTO requestContactTypeDTO, UUID uuid) {
         if (uuid == null) {
             requestContactTypeDTO.setUuid(UUID.randomUUID());
-            contactTypeRepository
-                    .save(contactTypeMapper
-                            .convertPostContactTypeDTOToContactType(requestContactTypeDTO));
+
+            ContactType contactType = contactTypeMapper
+                    .convertPostContactTypeDTOToContactType(requestContactTypeDTO);
+
+            contactTypeRepository.save(contactType);
+
+            return contactTypeMapper.convertToContactTypeDTO(contactType);
         } else {
             ContactType contactType = getContactTypeByUuid(uuid);
             ContactType updatedContactType = contactTypeMapper.convertPostContactTypeDTOToContactType(requestContactTypeDTO);
@@ -51,9 +55,9 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
             updatedContactType.setId(contactType.getId());
 
             contactTypeRepository.save(updatedContactType);
-        }
 
-        return requestContactTypeDTO;
+            return contactTypeMapper.convertToContactTypeDTO(updatedContactType);
+        }
     }
 
     @Override
