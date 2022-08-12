@@ -10,6 +10,4 @@ public interface CRUDService<T, U> {
     T getByUuid(UUID uuid);
 
     T createOrUpdate(U object, UUID uuid);
-
-    Page<T> getAll();
 }

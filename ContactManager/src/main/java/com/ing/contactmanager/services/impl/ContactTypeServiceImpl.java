@@ -60,12 +60,6 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ResponseContactTypeDTO> getAll() {
-        return new PageImpl<>(contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll()));
-    }
-
     private ContactType getContactTypeByUuid(UUID uuid) {
         return contactTypeRepository
                 .findByUid(uuid)

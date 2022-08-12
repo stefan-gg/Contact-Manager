@@ -21,7 +21,8 @@ public class WebSecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/users/").anonymous()
 
                 .antMatchers("/contact-types/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/users/*", "/contacts/").hasRole("ADMIN")

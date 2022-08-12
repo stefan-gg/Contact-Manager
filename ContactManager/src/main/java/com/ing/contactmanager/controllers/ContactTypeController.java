@@ -17,11 +17,6 @@ public class ContactTypeController {
 
     private final CRUDService<ResponseContactTypeDTO, RequestContactTypeDTO> contactTypeServiceDTO;
 
-    @GetMapping
-    public ResponseEntity<Page<ResponseContactTypeDTO>> getAll() {
-        return ResponseEntity.ok(contactTypeServiceDTO.getAll());
-    }
-
     @PostMapping
     public ResponseEntity<ResponseContactTypeDTO> save(@RequestBody RequestContactTypeDTO requestContactTypeDTO) {
         return ResponseEntity.ok(contactTypeServiceDTO.createOrUpdate(requestContactTypeDTO, null));

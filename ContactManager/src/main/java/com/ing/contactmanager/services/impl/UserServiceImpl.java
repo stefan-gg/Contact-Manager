@@ -10,6 +10,7 @@ import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -70,15 +72,13 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
 
                 return userMapper.convertToUserDTO(updatedUser);
             } else {
-                throw new RuntimeException("Login required.");
+                try {
+                    throw new AccessDeniedException("Login required.");
+                } catch (AccessDeniedException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ResponseUserDTO> getAll() {
-        return new PageImpl<>(userMapper.getAllUsers(userRepository.findAllByOrderByLastNameAsc()));
     }
 
     public Page<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
@@ -92,7 +92,11 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
                     .getAllContactsForUser(uuid, getContactsByUserUid(uuid, pageable)
                             .getContent()));
         } else {
-            throw new RuntimeException("Access denied");
+            try {
+                throw new AccessDeniedException("Access denied");
+            } catch (AccessDeniedException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
     }
 
@@ -113,7 +117,11 @@ public class UserServiceImpl implements CRUDService<ResponseUserDTO, RequestUser
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             userEmail = authentication.getName();
         } else {
-            throw new RuntimeException("Method denied");
+            try {
+                throw new AccessDeniedException("Access denied");
+            } catch (AccessDeniedException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
 
         final String email = userEmail;

@@ -21,11 +21,6 @@ public class UserController {
     private final CRUDService<ResponseUserDTO, RequestUserDTO> userServiceDTO;
     private final UserServiceImpl userServiceImpl;
 
-    @GetMapping
-    public ResponseEntity<Page<ResponseUserDTO>> getAllUsers() {
-        return ResponseEntity.ok(userServiceDTO.getAll());
-    }
-
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<Page<ResponseUserDTO>> getAllUsersFromPage(Pageable pageable) {
         return ResponseEntity.ok(userServiceImpl.getUsersByPage(pageable));

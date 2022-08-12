@@ -121,12 +121,6 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
                         .getUserEmail() + "does not exist"));
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ResponseContactDTO> getAll() {
-        return new PageImpl<>(contactMapper.getAllContacts(contactRepository.findAll()));
-    }
-
     private Contact getContactByUuid(UUID uuid) {
         return contactRepository
                 .findByUid(uuid)
@@ -141,6 +135,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<ResponseContactDTO> getContactsByPage(Pageable page) {
         return new PageImpl<>(contactMapper
                 .getAllContacts(contactRepository
