@@ -1,8 +1,8 @@
 package com.ing.contactmanager.security.authentication.impl;
 
 import com.ing.contactmanager.entities.User;
-import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.security.authentication.AuthenticationFacade;
+import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,13 +10,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.AccessDeniedException;
-import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
-    private final UserRepository userRepository;
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private final UserServiceImpl userService;
 
     @Override
     public User getLoggedInUser() {
@@ -32,9 +32,29 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
                 throw new RuntimeException(e.getMessage());
             }
         }
+        return userService.getUserByEmail(userEmail);
+    }
 
-        final String email = userEmail;
-        return userRepository.getUserByEmail(userEmail)
-                .orElseThrow(() -> new NoSuchElementException("User with email : " + email + " does not exist"));
+    @Override
+    public boolean canThisUserCreateNewUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if ((authentication instanceof AnonymousAuthenticationToken)) {
+            return true;
+        }
+
+        return userService.getUserByEmail(authentication.getName()).getRole().toString().equals(
+                ROLE_ADMIN);
+    }
+
+    @Override
+    public boolean isLoggedUserAdmin() {
+        User loggedUser = getLoggedInUser();
+
+        if (loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
+            return true;
+        }
+        return false;
     }
 }

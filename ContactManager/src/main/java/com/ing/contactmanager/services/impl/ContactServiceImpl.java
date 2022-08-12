@@ -36,48 +36,30 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
-
-        User loggedUser = userService.getLoggedInUser();
-
-        Contact contact = contactRepository
-                .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
-
-        if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
-            contactRepository.deleteByUid(uuid);
-        } else {
-            throw new RuntimeException("Method denied");
-        }
+        contactRepository.deleteByUid(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ResponseContactDTO getByUuid(UUID uuid) {
 
-        User loggedUser = userService.getLoggedInUser();
 
-        Contact contact = contactRepository
-                .findByUid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist"));
+        Contact contact = contactRepository.findByUid(uuid).orElseThrow(
+                () -> new NoSuchElementException(
+                        "Element with UUID : " + uuid.toString() + " does not exist"));
 
-        if (loggedUser.getId().equals(contact.getUser().getId()) || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
-            return contactMapper.convertContactToContactDTO(contact);
-        } else {
-            throw new RuntimeException("Method denied");
-        }
+        return contactMapper.convertContactToContactDTO(contact);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid) {
-        User loggedUser = userService.getLoggedInUser();
 
         User user = getUser(postRequestContactDTO);
 
-        ContactType contactType = contactTypeRepository
-                .getContactTypeByContactTypeName(postRequestContactDTO
-                        .getContactTypeName())
-                .orElseThrow(() -> new EntityNotFoundException("ContactType with passed UUID does not exist"));
+        ContactType contactType = contactTypeRepository.getContactTypeByContactTypeName(
+                postRequestContactDTO.getContactTypeName()).orElseThrow(
+                () -> new EntityNotFoundException("ContactType with passed Name does not exist"));
 
         if (uuid == null) {
 
@@ -87,29 +69,22 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
             contact.setContactType(contactType);
             contact.setUser(user);
 
-            if (contact.getUser().getId() == loggedUser.getId() && !loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
-                contactRepository.save(contact);
-                return contactMapper.convertContactToContactDTO(contact);
-            } else {
-                throw new RuntimeException("Method denied");
-            }
+            contactRepository.save(contact);
+            return contactMapper.convertContactToContactDTO(contact);
 
         } else {
 
             Contact contact = getContactByUuid(uuid);
 
-            if (loggedUser.getId() == contact.getUser().getId() || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
-                Contact updatedContact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
-                updatedContact.setUser(user);
-                updatedContact.setContactType(contactType);
-                updatedContact.setId(contact.getId());
+            Contact updatedContact =
+                    contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
+            updatedContact.setUser(user);
+            updatedContact.setContactType(contactType);
+            updatedContact.setId(contact.getId());
 
-                contactRepository.save(updatedContact);
+            contactRepository.save(updatedContact);
 
-                return contactMapper.convertContactToContactDTO(updatedContact);
-            } else {
-                throw new RuntimeException("Method denied");
-            }
+            return contactMapper.convertContactToContactDTO(updatedContact);
         }
     }
 

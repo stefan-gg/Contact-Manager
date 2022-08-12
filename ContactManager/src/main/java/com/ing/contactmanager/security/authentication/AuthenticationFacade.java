@@ -5,4 +5,8 @@ import org.springframework.security.core.Authentication;
 
 public interface AuthenticationFacade {
     public User getLoggedInUser();
+
+    public boolean canThisUserCreateNewUser();
+
+    public boolean isLoggedUserAdmin();
 }
