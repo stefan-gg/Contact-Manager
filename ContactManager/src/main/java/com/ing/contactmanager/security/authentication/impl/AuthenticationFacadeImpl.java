@@ -20,7 +20,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
     @Override
     public User getLoggedInUser() {
-        String userEmail = null;
+        String userEmail;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -52,9 +52,6 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     public boolean isLoggedUserAdmin() {
         User loggedUser = getLoggedInUser();
 
-        if (loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
-            return true;
-        }
-        return false;
+        return loggedUser.getRole().toString().equals(ROLE_ADMIN);
     }
 }

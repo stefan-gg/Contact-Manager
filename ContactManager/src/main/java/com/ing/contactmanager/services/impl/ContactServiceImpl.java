@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -102,7 +103,7 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     }
 
     public boolean compareTwoUsers(User loggedUser, User user){
-        if (loggedUser.getId() == user.getId() || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
+        if (Objects.equals(loggedUser.getId(), user.getId()) || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
             return true;
         } else {
             throw new RuntimeException("Method denied");
@@ -110,9 +111,9 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
     }
 
     @Transactional(readOnly = true)
-    public Page<ResponseContactDTO> getContacts(Pageable page) {
+    public Page<ResponseContactDTO> getContacts(Pageable page, User user) {
         return new PageImpl<>(contactMapper
                 .getAllContacts(contactRepository
-                        .findAllByOrderByLastNameAsc(page).getContent()));
+                        .findContactsByUser_Uid(user.getUid(), page).getContent()));
     }
 }

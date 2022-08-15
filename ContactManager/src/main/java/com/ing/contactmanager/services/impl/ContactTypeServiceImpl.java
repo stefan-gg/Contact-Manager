@@ -23,6 +23,12 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
     private final ContactTypeRepository contactTypeRepository;
     private final ContactTypeMapper contactTypeMapper;
 
+    @Transactional(readOnly = true)
+    public Page<ResponseContactTypeDTO> getAll(Pageable pageable) {
+        return new PageImpl<>(
+                contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll(pageable).getContent()));
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
@@ -60,12 +66,6 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
 
             return contactTypeMapper.convertToContactTypeDTO(updatedContactType);
         }
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ResponseContactTypeDTO> getAll() {
-        return new PageImpl<>(
-                contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll()));
     }
 
     private ContactType getContactTypeByUuid(UUID uuid) {

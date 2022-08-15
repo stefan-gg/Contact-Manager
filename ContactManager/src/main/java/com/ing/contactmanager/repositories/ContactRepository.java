@@ -17,4 +17,6 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
     Page<Contact> findAllByOrderByLastNameAsc(Pageable pageable);
 
     void deleteByUid(UUID uuid);
+
+    Page<Contact> findContactsByUser_Uid(UUID uuid, Pageable pageable);
 }

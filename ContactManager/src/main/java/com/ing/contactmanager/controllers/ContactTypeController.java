@@ -20,9 +20,9 @@ public class ContactTypeController {
     private final CRUDService<ResponseContactTypeDTO, RequestContactTypeDTO> contactTypeServiceDTO;
     private final ContactTypeServiceImpl contactTypeService;
 
-    @GetMapping
-    public ResponseEntity<Page<ResponseContactTypeDTO>> getAllContactTypes(){
-        return ResponseEntity.ok(contactTypeService.getAll());
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<Page<ResponseContactTypeDTO>> getAllContactTypes(Pageable pageable){
+        return ResponseEntity.ok(contactTypeService.getAll(pageable));
     }
 
     @PostMapping
