@@ -7,5 +7,6 @@ public interface AuthenticationFacade {
 
     public boolean canThisUserCreateNewUser();
 
-    public boolean isLoggedUserAdmin();
+    public String getEmailFromLoggedInUser();
+    public boolean isLoggedUserAdmin(User user);
 }

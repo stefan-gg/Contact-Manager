@@ -22,7 +22,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     public User getLoggedInUser() {
         String userEmail;
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             userEmail = authentication.getName();
         } else {
@@ -38,20 +38,23 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     @Override
     public boolean canThisUserCreateNewUser() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if ((authentication instanceof AnonymousAuthenticationToken)) {
-            return true;
-        }
+        Authentication authentication = getAuthentication();
 
         return userService.getUserByEmail(authentication.getName()).getRole().toString().equals(
                 ROLE_ADMIN);
     }
 
     @Override
-    public boolean isLoggedUserAdmin() {
-        User loggedUser = getLoggedInUser();
+    public String getEmailFromLoggedInUser() {
+        return getAuthentication().getName();
+    }
 
-        return loggedUser.getRole().toString().equals(ROLE_ADMIN);
+    @Override
+    public boolean isLoggedUserAdmin(User user) {
+        return user.getRole().toString().equals(ROLE_ADMIN);
+    }
+
+    private static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 }

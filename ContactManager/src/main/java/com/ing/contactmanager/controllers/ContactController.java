@@ -4,7 +4,6 @@ import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
 import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.security.authentication.AuthenticationFacade;
-import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.ContactServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,41 +16,60 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/contacts")
+@RequestMapping
 public class ContactController {
 
-    private final CRUDService<ResponseContactDTO, RequestContactDTO> contactServiceDTO;
     private final ContactServiceImpl contactService;
     private final AuthenticationFacade authenticationFacade;
 
-    @GetMapping(params = {"page", "size"})
+    @GetMapping("/contacts")
     public ResponseEntity<Page<ResponseContactDTO>> getAllContacts(Pageable pageable) {
-        if (!authenticationFacade.isLoggedUserAdmin()) {
-            User loggedInUser = authenticationFacade.getLoggedInUser();
 
+        User loggedInUser = authenticationFacade.getLoggedInUser();
+
+        if (!authenticationFacade.isLoggedUserAdmin(loggedInUser)) {
             return ResponseEntity.ok(contactService.getContacts(pageable, loggedInUser));
         }
 
         throw new AccessDeniedException("Access denied");
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseContactDTO> save(@RequestBody RequestContactDTO postRequestContactDTO){
-        return ResponseEntity.ok(contactServiceDTO.createOrUpdate(postRequestContactDTO, null));
+    @GetMapping("/users/{uuid}/contacts")
+    public ResponseEntity<Page<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid,
+                                                                       Pageable pageable)
+            throws java.nio.file.AccessDeniedException {
+        User loggedInUser = authenticationFacade.getLoggedInUser();
+
+        if (authenticationFacade.isLoggedUserAdmin(loggedInUser)) {
+            return ResponseEntity.ok(contactService.getContactsForUser(uuid, pageable));
+        }
+
+        throw new java.nio.file.AccessDeniedException("Access denied");
     }
 
-    @PutMapping("/{uuid}")
-    public ResponseEntity<ResponseContactDTO> update(@RequestBody RequestContactDTO postRequestContactDTO, @PathVariable UUID uuid){
-        return ResponseEntity.ok(contactServiceDTO.createOrUpdate(postRequestContactDTO, uuid));
+    @GetMapping("/contacts/{uuid}")
+    public ResponseEntity<ResponseContactDTO> getById(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(contactService.getByUuid(uuid));
     }
 
-    @DeleteMapping("/{uuid}")
-    public void delete(@PathVariable UUID uuid){
-        contactServiceDTO.deleteByUuid(uuid);
+    @PostMapping("/contacts")
+    public ResponseEntity<ResponseContactDTO> save(
+            @RequestBody RequestContactDTO postRequestContactDTO)
+            throws java.nio.file.AccessDeniedException {
+        return ResponseEntity.ok(contactService.createOrUpdate(postRequestContactDTO, null,
+                authenticationFacade.getEmailFromLoggedInUser()));
     }
 
-    @GetMapping("/{uuid}")
-    public ResponseEntity<ResponseContactDTO> getById(@PathVariable UUID uuid){
-        return ResponseEntity.ok(contactServiceDTO.getByUuid(uuid));
+    @PutMapping("/contacts/{uuid}")
+    public ResponseEntity<ResponseContactDTO> update(
+            @RequestBody RequestContactDTO postRequestContactDTO, @PathVariable UUID uuid)
+            throws java.nio.file.AccessDeniedException {
+        return ResponseEntity.ok(contactService.createOrUpdate(postRequestContactDTO, uuid,
+                authenticationFacade.getEmailFromLoggedInUser()));
+    }
+
+    @DeleteMapping("/contacts/{uuid}")
+    public void delete(@PathVariable UUID uuid) throws java.nio.file.AccessDeniedException {
+        contactService.deleteByUuid(uuid, authenticationFacade.getEmailFromLoggedInUser());
     }
 }

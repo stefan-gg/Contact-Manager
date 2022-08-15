@@ -32,7 +32,6 @@ public class ContactTypeMapper {
     public ContactType convertPostContactTypeDTOToContactType(RequestContactTypeDTO requestContactTypeDTO) {
         ContactType contactType = new ContactType();
 
-        contactType.setUid(requestContactTypeDTO.getUuid());
         contactType.setContactTypeName(requestContactTypeDTO.getContactTypeName());
 
         return contactType;

@@ -21,14 +21,11 @@ public class WebSecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/").permitAll()
 
-                .antMatchers("/contact-types/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, /*"/users/**",*/ "/contacts/").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/users/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/users/*", "/contact-types/**").hasRole("ADMIN")
+                .antMatchers( "/users/**", "/contact-types/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "users/{uuid}/contacts").hasRole("ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/users/{uuid}/contacts").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/contacts/").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/contacts/").hasRole("USER")
                 .antMatchers(HttpMethod.PUT, "/contacts/*").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE, "/contacts/*").hasAnyRole("USER", "ADMIN")

@@ -1,10 +1,9 @@
 package com.ing.contactmanager.controllers;
 
 import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.security.authentication.AuthenticationFacade;
-import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,6 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    private final CRUDService<ResponseUserDTO, RequestUserDTO> userServiceDTO;
     private final UserServiceImpl userServiceImpl;
     private final AuthenticationFacade authenticationFacade;
 
@@ -29,12 +27,24 @@ public class UserController {
         return ResponseEntity.ok(userServiceImpl.getUsers(pageable));
     }
 
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseUserDTO> getById(@PathVariable UUID uuid)
+            throws AccessDeniedException {
+        User loggedInUser = authenticationFacade.getLoggedInUser();
+
+        if (authenticationFacade.isLoggedUserAdmin(loggedInUser)) {
+            return ResponseEntity.ok(userServiceImpl.getByUuid(uuid));
+        }
+
+        throw new AccessDeniedException("Access denied");
+    }
+
     @PostMapping
     public ResponseEntity<ResponseUserDTO> save(@RequestBody RequestUserDTO requestUserDTO)
             throws AccessDeniedException {
 
         if (authenticationFacade.canThisUserCreateNewUser()) {
-            return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, null));
+            return ResponseEntity.ok(userServiceImpl.createOrUpdate(requestUserDTO, null));
         }
         throw new AccessDeniedException("Access denied");
     }
@@ -42,31 +52,11 @@ public class UserController {
     @PutMapping("/{uuid}")
     public ResponseEntity<ResponseUserDTO> update(@RequestBody RequestUserDTO requestUserDTO,
                                                   @PathVariable UUID uuid) {
-        return ResponseEntity.ok(userServiceDTO.createOrUpdate(requestUserDTO, uuid));
-    }
-
-    @GetMapping("/{uuid}/contacts")
-    public ResponseEntity<Page<ResponseContactDTO>> getContactsForUser(@PathVariable UUID uuid,
-                                                                       Pageable pageable)
-            throws AccessDeniedException {
-
-        if (authenticationFacade.isLoggedUserAdmin()) {
-            return ResponseEntity.ok(userServiceImpl.getContactsForUser(uuid, pageable));
-        }
-        throw new AccessDeniedException("Access denied");
+        return ResponseEntity.ok(userServiceImpl.createOrUpdate(requestUserDTO, uuid));
     }
 
     @DeleteMapping("/{uuid}")
     public void deleteById(@PathVariable UUID uuid) throws AccessDeniedException {
-        userServiceDTO.deleteByUuid(uuid);
-    }
-
-    @GetMapping("/{uuid}")
-    public ResponseEntity<ResponseUserDTO> getById(@PathVariable UUID uuid)
-            throws AccessDeniedException {
-        if (authenticationFacade.isLoggedUserAdmin()) {
-            return ResponseEntity.ok(userServiceDTO.getByUuid(uuid));
-        }
-        throw new AccessDeniedException("Access denied");
+        userServiceImpl.deleteByUuid(uuid);
     }
 }

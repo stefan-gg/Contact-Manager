@@ -11,8 +11,6 @@ import java.util.UUID;
 @Setter
 public class RequestContactTypeDTO {
 
-    private UUID uuid;
-
     @NotBlank()
     @Size(max = 50)
     private String contactTypeName;

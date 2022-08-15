@@ -12,8 +12,6 @@ import java.util.UUID;
 @Setter
 public class RequestContactDTO {
 
-    private UUID uuid;
-
     @Email
     @Size(max = 100)
     private String email;
@@ -35,14 +33,6 @@ public class RequestContactDTO {
     @NotBlank()
     @Size(max = 50)
     private String phoneNumber;
-
-    //@NotBlank(message = "User cannot be null")
-    //private RequestUserDTO postUserDTO;
-    //@NotBlank(message = "Contact type cannot be null")
-    //private RequestContactTypeDTO postContactTypeDTO;
-
-    @Size(max = 100)
-    private String userEmail;
 
     @Size(max = 50)
     private String contactTypeName;

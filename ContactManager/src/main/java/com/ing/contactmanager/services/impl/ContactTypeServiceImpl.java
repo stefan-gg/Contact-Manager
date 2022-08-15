@@ -1,10 +1,10 @@
 package com.ing.contactmanager.services.impl;
 
+import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
 import com.ing.contactmanager.dtos.request.contactType.RequestContactTypeDTO;
 import com.ing.contactmanager.dtos.response.contactType.ResponseContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
-import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.ContactTypeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,12 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDTO, RequestContactTypeDTO> {
+public class ContactTypeServiceImpl {
 
     private final ContactTypeRepository contactTypeRepository;
     private final ContactTypeMapper contactTypeMapper;
@@ -29,13 +30,11 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
                 contactTypeMapper.getAllContactTypes(contactTypeRepository.findAll(pageable).getContent()));
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
         contactTypeRepository.deleteByUid(uuid);
     }
 
-    @Override
     @Transactional(readOnly = true)
     public ResponseContactTypeDTO getByUuid(UUID uuid) {
         return contactTypeMapper.convertToContactTypeDTO(contactTypeRepository
@@ -43,14 +42,14 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
                 .orElseThrow(() -> new NoSuchElementException("Element with UUID : " + uuid.toString() + " does not exist")));
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseContactTypeDTO createOrUpdate(RequestContactTypeDTO requestContactTypeDTO, UUID uuid) {
         if (uuid == null) {
-            requestContactTypeDTO.setUuid(UUID.randomUUID());
 
             ContactType contactType = contactTypeMapper
                     .convertPostContactTypeDTOToContactType(requestContactTypeDTO);
+
+            contactType.setUid(UUID.randomUUID());
 
             contactTypeRepository.save(contactType);
 
@@ -66,6 +65,12 @@ public class ContactTypeServiceImpl implements CRUDService<ResponseContactTypeDT
 
             return contactTypeMapper.convertToContactTypeDTO(updatedContactType);
         }
+    }
+
+    public ContactType getContactType(RequestContactDTO postRequestContactDTO) {
+        return contactTypeRepository.getContactTypeByContactTypeName(
+                postRequestContactDTO.getContactTypeName()).orElseThrow(
+                () -> new EntityNotFoundException("ContactType with passed Name does not exist"));
     }
 
     private ContactType getContactTypeByUuid(UUID uuid) {

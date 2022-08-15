@@ -12,7 +12,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RequestUserDTO {
-    private UUID uuid;
 
     @Email
     @Size(max = 100)

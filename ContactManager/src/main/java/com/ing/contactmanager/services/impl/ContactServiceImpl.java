@@ -6,10 +6,8 @@ import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.ContactRepository;
-import com.ing.contactmanager.repositories.ContactTypeRepository;
-import com.ing.contactmanager.repositories.UserRepository;
-import com.ing.contactmanager.services.CRUDService;
 import com.ing.contactmanager.services.mappers.ContactMapper;
+import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,29 +16,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ContactServiceImpl implements CRUDService<ResponseContactDTO, RequestContactDTO> {
+public class ContactServiceImpl {
 
-    private final UserServiceImpl userService;
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private final UserServiceImpl userService;
     private final ContactRepository contactRepository;
+    private final ContactTypeServiceImpl contactTypeService;
     private final ContactMapper contactMapper;
-    private final UserRepository userRepository;
-    private final ContactTypeRepository contactTypeRepository;
+    private final UserMapper userMapper;
 
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteByUuid(UUID uuid) {
-        contactRepository.deleteByUid(uuid);
+    @Transactional(readOnly = true)
+    public Page<ResponseContactDTO> getContacts(Pageable page, User user) {
+        return new PageImpl<>(contactMapper
+                .getAllContacts(contactRepository
+                        .findContactsByUser_Uid(user.getUid(), page).getContent()));
     }
 
-    @Override
     @Transactional(readOnly = true)
     public ResponseContactDTO getByUuid(UUID uuid) {
 
@@ -52,13 +50,14 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
         return contactMapper.convertContactToContactDTO(contact);
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid) {
+    public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid,
+                                             String userEmail)
+            throws AccessDeniedException {
 
-        User user = getUser(postRequestContactDTO);
+        User user = userService.getUserByEmail(userEmail);
 
-        ContactType contactType = getContactType(postRequestContactDTO);
+        ContactType contactType = contactTypeService.getContactType(postRequestContactDTO);
 
         if (uuid == null) {
 
@@ -75,45 +74,55 @@ public class ContactServiceImpl implements CRUDService<ResponseContactDTO, Reque
 
             Contact contact = getContactByUuid(uuid);
 
-            Contact updatedContact =
-                    contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
-            updatedContact.setUser(user);
-            updatedContact.setContactType(contactType);
-            updatedContact.setId(contact.getId());
+            if (contact.getUser().getId().equals(user.getId())) {
 
-            contactRepository.save(updatedContact);
+                Contact updatedContact =
+                        contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
 
-            return contactMapper.convertContactToContactDTO(updatedContact);
+                updatedContact.setUser(user);
+                updatedContact.setContactType(contactType);
+                updatedContact.setId(contact.getId());
+
+                contactRepository.save(updatedContact);
+
+                return contactMapper.convertContactToContactDTO(updatedContact);
+            }
+
+            throw new AccessDeniedException("Access denied");
         }
     }
 
-    private ContactType getContactType(RequestContactDTO postRequestContactDTO) {
-        return contactTypeRepository.getContactTypeByContactTypeName(
-                postRequestContactDTO.getContactTypeName()).orElseThrow(
-                () -> new EntityNotFoundException("ContactType with passed Name does not exist"));
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByUuid(UUID uuid, String userEmail) throws AccessDeniedException {
+        User user = userService.getUserByEmail(userEmail);
+
+        Contact contact = getContactByUuid(uuid);
+
+        if (contact.getUser().getId().equals(user.getId()) || user.getRole().toString().equals(
+                ROLE_ADMIN)) {
+
+            contactRepository.deleteByUid(uuid);
+        } else {
+            throw new AccessDeniedException("Access denied");
+        }
     }
 
-    private User getUser(RequestContactDTO postRequestContactDTO) {
-        return userService.getUserByEmail(postRequestContactDTO.getUserEmail());
+    @Transactional(rollbackFor = Exception.class)
+    public Page<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
+        return new PageImpl<>(userMapper.getAllContactsForUser(uuid,
+                getContactsByUserUid(uuid, pageable).getContent()));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
+        return new PageImpl<>(contactRepository.getContactsByUser_Uid(uuid, page).orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Element with UUID : " + uuid.toString() + " does not exist"))
+                .getContent());
     }
 
     private Contact getContactByUuid(UUID uuid) {
         return contactRepository.findByUid(uuid).orElseThrow(() -> new NoSuchElementException(
                 "Element with UUID : " + uuid.toString() + " does not exist"));
-    }
-
-    public boolean compareTwoUsers(User loggedUser, User user){
-        if (Objects.equals(loggedUser.getId(), user.getId()) || loggedUser.getRole().toString().equals(ROLE_ADMIN)) {
-            return true;
-        } else {
-            throw new RuntimeException("Method denied");
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ResponseContactDTO> getContacts(Pageable page, User user) {
-        return new PageImpl<>(contactMapper
-                .getAllContacts(contactRepository
-                        .findContactsByUser_Uid(user.getUid(), page).getContent()));
     }
 }

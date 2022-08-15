@@ -51,7 +51,6 @@ public class UserMapper {
     public User convertPostUserDTOToUser(RequestUserDTO requestUserDTO) {
         User user = new User();
 
-        user.setUid(requestUserDTO.getUuid());
         user.setEmail(requestUserDTO.getEmail());
         user.setPassword(passwordEncoder.encode(requestUserDTO.getPassword()));
         user.setFirstName(requestUserDTO.getFirstName());
