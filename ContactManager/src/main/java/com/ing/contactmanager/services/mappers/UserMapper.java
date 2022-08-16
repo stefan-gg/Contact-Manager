@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,11 +26,6 @@ public class UserMapper {
                 .stream()
                 .map(this::convertToUserDTO)
                 .collect(Collectors.toList()));
-    }
-
-    public List<ResponseContactDTO> getAllContactsForUser(UUID uuid, List<Contact> contacts) {
-        List<ResponseContactDTO> contactsDTO = contactMapper.convertContactsToContactsDTO(contacts);
-        return contactsDTO;
     }
 
     public ResponseUserDTO convertToUserDTO(User user) {

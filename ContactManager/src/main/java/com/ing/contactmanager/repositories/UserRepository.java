@@ -14,7 +14,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUid(UUID uuid);
 
     void deleteByUid(UUID uuid);
-    List<User> findAllByOrderByLastNameAsc();
     Optional<User> getUserByEmail(String email);
 
     Page<User> findAllByOrderByLastNameAsc(Pageable pageable);

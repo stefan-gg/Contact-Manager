@@ -34,7 +34,7 @@ public class Contact {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @Size(max = 100, message = "Info cannot be null or greater than 50")
+    @Size(max = 100, message = "Info cannot be null or greater than 100")
     @Column(name = "info", length = 100)
     private String info;
 
@@ -47,7 +47,7 @@ public class Contact {
     private String phoneNumber;
 
     @Size(max = 100, message = "Maximum email length is 100")
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", length = 100)
     private String email;
 
     @CreationTimestamp

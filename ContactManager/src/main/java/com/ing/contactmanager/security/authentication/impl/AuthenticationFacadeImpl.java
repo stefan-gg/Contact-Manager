@@ -15,7 +15,6 @@ import java.nio.file.AccessDeniedException;
 @RequiredArgsConstructor
 public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
     private final UserServiceImpl userService;
 
     @Override
@@ -36,22 +35,8 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     }
 
     @Override
-    public boolean canThisUserCreateNewUser() {
-
-        Authentication authentication = getAuthentication();
-
-        return userService.getUserByEmail(authentication.getName()).getRole().toString().equals(
-                ROLE_ADMIN);
-    }
-
-    @Override
     public String getEmailFromLoggedInUser() {
         return getAuthentication().getName();
-    }
-
-    @Override
-    public boolean isLoggedUserAdmin(User user) {
-        return user.getRole().toString().equals(ROLE_ADMIN);
     }
 
     private static Authentication getAuthentication() {

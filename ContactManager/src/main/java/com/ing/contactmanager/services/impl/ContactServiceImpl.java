@@ -7,16 +7,15 @@ import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.ContactRepository;
 import com.ing.contactmanager.services.mappers.ContactMapper;
-import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -29,7 +28,6 @@ public class ContactServiceImpl {
     private final ContactRepository contactRepository;
     private final ContactTypeServiceImpl contactTypeService;
     private final ContactMapper contactMapper;
-    private final UserMapper userMapper;
 
 
     @Transactional(readOnly = true)
@@ -37,6 +35,14 @@ public class ContactServiceImpl {
         return new PageImpl<>(contactMapper
                 .getAllContacts(contactRepository
                         .findContactsByUser_Uid(user.getUid(), page).getContent()));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
+        return new PageImpl<>(contactRepository.getContactsByUser_Uid(uuid, page).orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Element with UUID : " + uuid.toString() + " does not exist"))
+                .getContent());
     }
 
     @Transactional(readOnly = true)
@@ -50,18 +56,37 @@ public class ContactServiceImpl {
         return contactMapper.convertContactToContactDTO(contact);
     }
 
+//    @Transactional(readOnly = true)
+//    public Page<ResponseContactDTO> getContactsBySearchQuery(String searchParam, String userEmail,
+//                                                             Pageable pageable) {
+//
+//
+//        return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
+//                contactRepository
+//                        .getContactsByAddressContainsAndEmailContainsAndFirstNameContainsAndLastNameContainsAndUser_Email(
+//                                searchParam, searchParam, searchParam, searchParam,
+//                                userEmail,
+//                                pageable)
+//                        .orElseThrow(
+//                                () -> new NoSuchElementException(
+//                                        "There are no elements that match your search"))
+//                        .getContent()));
+//    }
+
     @Transactional(rollbackFor = Exception.class)
     public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid,
                                              String userEmail)
             throws AccessDeniedException {
 
-        User user = userService.getUserByEmail(userEmail);
 
         ContactType contactType = contactTypeService.getContactType(postRequestContactDTO);
 
         if (uuid == null) {
 
-            Contact contact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
+            User user = userService.getUserByEmail(userEmail);
+
+            Contact contact = new Contact();
+            contact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO, contact);
 
             contact.setUid(UUID.randomUUID());
             contact.setContactType(contactType);
@@ -74,18 +99,17 @@ public class ContactServiceImpl {
 
             Contact contact = getContactByUuid(uuid);
 
-            if (contact.getUser().getId().equals(user.getId())) {
+            if (contact.getUser().getEmail().equals(userEmail)) {
 
-                Contact updatedContact =
-                        contactMapper.convertPostContactDTOToContact(postRequestContactDTO);
+                contact =
+                        contactMapper.convertPostContactDTOToContact(postRequestContactDTO,
+                                contact);
 
-                updatedContact.setUser(user);
-                updatedContact.setContactType(contactType);
-                updatedContact.setId(contact.getId());
+                contact.setContactType(contactType);
 
-                contactRepository.save(updatedContact);
+                contactRepository.save(contact);
 
-                return contactMapper.convertContactToContactDTO(updatedContact);
+                return contactMapper.convertContactToContactDTO(contact);
             }
 
             throw new AccessDeniedException("Access denied");
@@ -109,16 +133,8 @@ public class ContactServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public Page<ResponseContactDTO> getContactsForUser(UUID uuid, Pageable pageable) {
-        return new PageImpl<>(userMapper.getAllContactsForUser(uuid,
+        return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
                 getContactsByUserUid(uuid, pageable).getContent()));
-    }
-
-    @Transactional(readOnly = true)
-    public Page<Contact> getContactsByUserUid(UUID uuid, Pageable page) {
-        return new PageImpl<>(contactRepository.getContactsByUser_Uid(uuid, page).orElseThrow(
-                        () -> new EntityNotFoundException(
-                                "Element with UUID : " + uuid.toString() + " does not exist"))
-                .getContent());
     }
 
     private Contact getContactByUuid(UUID uuid) {

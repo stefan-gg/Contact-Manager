@@ -41,9 +41,10 @@ public class ContactMapper {
         return responseContactDTO;
     }
 
-    public Contact convertPostContactDTOToContact(RequestContactDTO postRequestContactDTO) {
-        Contact contact = new Contact();
+    public Contact convertPostContactDTOToContact(RequestContactDTO postRequestContactDTO, Contact contact) {
 
+        contact.setId(contact.getId());
+        contact.setContactType(contact.getContactType());
         contact.setEmail(postRequestContactDTO.getEmail());
         contact.setFirstName(postRequestContactDTO.getFirstName());
         contact.setLastName(postRequestContactDTO.getLastName());

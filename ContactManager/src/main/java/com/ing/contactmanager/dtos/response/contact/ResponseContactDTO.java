@@ -22,9 +22,4 @@ public class ResponseContactDTO {
     private String address;
 
     private String phoneNumber;
-
-//    private LocalDateTime createdAt;
-//    private LocalDateTime updatedAt;
-//    private User user;
-//    private ContactType contactType;
 }

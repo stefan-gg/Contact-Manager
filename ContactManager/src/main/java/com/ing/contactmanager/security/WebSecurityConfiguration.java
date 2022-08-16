@@ -13,6 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
 
+    public static final String ADMIN = "ADMIN";
+    public static final String USER = "USER";
     private final SecurityUserDetailsService usersDetailsService;
 
     @Bean
@@ -22,13 +24,10 @@ public class WebSecurityConfiguration {
                 .disable()
                 .authorizeRequests()
 
-                .antMatchers( "/users/**", "/contact-types/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "users/{uuid}/contacts").hasRole("ADMIN")
+                .antMatchers("/users/**", "/contact-types/**").hasRole(ADMIN)
 
-                .antMatchers(HttpMethod.GET, "/contacts/").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/contacts/").hasRole("USER")
-                .antMatchers(HttpMethod.PUT, "/contacts/*").hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/contacts/*").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/contacts/**").hasRole(USER)
+                .antMatchers(HttpMethod.DELETE, "/contacts/*").hasAnyRole(USER, ADMIN)
                 .anyRequest()
                 .authenticated()
                 .and()
