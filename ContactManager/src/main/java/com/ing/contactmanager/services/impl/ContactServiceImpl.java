@@ -33,7 +33,7 @@ public class ContactServiceImpl {
     @Transactional(readOnly = true)
     public Page<ResponseContactDTO> getContacts(Pageable page, User user) {
         return new PageImpl<>(contactMapper
-                .getAllContacts(contactRepository
+                .convertContactsToContactsDTO(contactRepository
                         .findContactsByUser_Uid(user.getUid(), page).getContent()));
     }
 

@@ -1,9 +1,7 @@
 package com.ing.contactmanager.services.mappers;
 
 import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
-import com.ing.contactmanager.entities.Contact;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.entities.enums.Role;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserMapper {
 
-    private final ContactMapper contactMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public List<ResponseUserDTO> getAllUsers(List<User> users) {

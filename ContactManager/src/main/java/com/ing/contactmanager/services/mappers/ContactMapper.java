@@ -13,13 +13,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ContactMapper {
 
-    public List<ResponseContactDTO> getAllContacts(List<Contact> contacts) {
-        return (contacts
-                .stream()
-                .map(this::convertContactToContactDTO)
-                .collect(Collectors.toList()));
-    }
-
     public List<ResponseContactDTO> convertContactsToContactsDTO(List<Contact> contacts) {
         return contacts
                 .stream()

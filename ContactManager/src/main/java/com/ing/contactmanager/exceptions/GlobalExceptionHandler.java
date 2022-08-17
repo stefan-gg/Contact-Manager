@@ -16,36 +16,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoSuchEntityException.class)
     public ResponseEntity<Object> handleNoSuchEntityException(NoSuchEntityException ex) {
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @ExceptionHandler(PSQLException.class)
     public ResponseEntity<Object> handleSQLException(PSQLException psqlException) {
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(psqlException.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleSQLException(IllegalArgumentException exception) {
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeException(RuntimeException exception) {
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }
