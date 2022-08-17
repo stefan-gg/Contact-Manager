@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,7 +42,8 @@ public class ContactController {
             boolean isAdmin) {
         return ResponseEntity.ok(contactService.getContactsBySearchQuery(searchParam,
                 authenticationFacade.getEmailFromLoggedInUser(), pageable,
-                authenticationFacade.isLoggedUserAdmin()));
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
+                        .contains("ROLE_ADMIN")));
     }
 
     @GetMapping("/users/{uuid}/contacts")

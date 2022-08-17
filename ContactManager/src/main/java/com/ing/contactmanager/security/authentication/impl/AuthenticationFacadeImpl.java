@@ -35,11 +35,6 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     }
 
     @Override
-    public boolean isLoggedUserAdmin() {
-        return getAuthentication().getAuthorities().toString().contains("ROLE_ADMIN");
-    }
-
-    @Override
     public String getEmailFromLoggedInUser() {
         return getAuthentication().getName();
     }
