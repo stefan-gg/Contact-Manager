@@ -38,8 +38,7 @@ public class ContactController {
     @GetMapping(value = "/contacts/search")
     public ResponseEntity<Page<ResponseContactDTO>> getContactsByTheSearchParam(
             @RequestParam String searchParam,
-            @PageableDefault(size = 5) Pageable pageable,
-            boolean isAdmin) {
+            @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(contactService.getContactsBySearchQuery(searchParam,
                 authenticationFacade.getEmailFromLoggedInUser(), pageable,
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
