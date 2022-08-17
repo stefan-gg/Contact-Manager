@@ -34,18 +34,15 @@ public class ContactController {
         return ResponseEntity.ok(contactService.getContacts(pageable, loggedInUser));
     }
 
-//    @GetMapping(value = "/contacts")
-//    public ResponseEntity<Page<ResponseContactDTO>> getContactsByTheSearchParam(
-//            @And({
-//                    @Spec(path = "firstName", spec = Like.class),
-//                    @Spec(path = "lastName", spec = Like.class),
-//                    @Spec(path = "phoneNumber", spec = Like.class),
-//                    @Spec(path = "email", spec = Like.class),
-//            }) Specification<Contact> contactSpecification,
-//            Pageable pageable) {
-//        return ResponseEntity.ok(contactService.getContactsBySearchQuery(searchParam,
-//                authenticationFacade.getEmailFromLoggedInUser(), pageable));
-//    }
+    @GetMapping(value = "/contacts/search")
+    public ResponseEntity<Page<ResponseContactDTO>> getContactsByTheSearchParam(
+            @RequestParam String searchParam,
+            @PageableDefault(size = 5) Pageable pageable,
+            boolean isAdmin) {
+        return ResponseEntity.ok(contactService.getContactsBySearchQuery(searchParam,
+                authenticationFacade.getEmailFromLoggedInUser(), pageable,
+                authenticationFacade.isLoggedUserAdmin()));
+    }
 
     @GetMapping("/users/{uuid}/contacts")
     public ResponseEntity<Page<ResponseContactDTO>> getContactsForUserAsAdmin(

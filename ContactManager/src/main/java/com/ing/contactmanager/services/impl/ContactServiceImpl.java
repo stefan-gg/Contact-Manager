@@ -56,22 +56,26 @@ public class ContactServiceImpl {
         return contactMapper.convertContactToContactDTO(contact);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<ResponseContactDTO> getContactsBySearchQuery(String searchParam, String userEmail,
-//                                                             Pageable pageable) {
-//
-//
-//        return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
-//                contactRepository
-//                        .getContactsByAddressContainsAndEmailContainsAndFirstNameContainsAndLastNameContainsAndUser_Email(
-//                                searchParam, searchParam, searchParam, searchParam,
-//                                userEmail,
-//                                pageable)
-//                        .orElseThrow(
-//                                () -> new NoSuchElementException(
-//                                        "There are no elements that match your search"))
-//                        .getContent()));
-//    }
+    @Transactional(readOnly = true)
+    public Page<ResponseContactDTO> getContactsBySearchQuery(String searchParam, String userEmail,
+                                                             Pageable pageable, boolean isAdmin) {
+
+        if (!isAdmin) {
+            return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
+                    contactRepository
+                            .userContactsSearch(
+                                    searchParam,
+                                    userEmail,
+                                    pageable)
+                            .getContent()));
+
+        } else {
+            return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
+                    contactRepository.adminAllContactsSearch(searchParam,
+                                    pageable)
+                            .getContent()));
+        }
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid,

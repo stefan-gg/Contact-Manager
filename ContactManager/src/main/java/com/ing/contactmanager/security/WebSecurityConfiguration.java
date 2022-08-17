@@ -26,6 +26,7 @@ public class WebSecurityConfiguration {
 
                 .antMatchers("/users/**", "/contact-types/**").hasRole(ADMIN)
 
+                .antMatchers(HttpMethod.GET, "/contacts/*").hasAnyRole(USER, ADMIN)
                 .antMatchers("/contacts/**").hasRole(USER)
                 .antMatchers(HttpMethod.DELETE, "/contacts/*").hasAnyRole(USER, ADMIN)
                 .anyRequest()
