@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -13,6 +14,8 @@ public class RequestContactDTO {
 
     @Email
     @Size(max = 100)
+    @Pattern(regexp = "^(?=.{1,100}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\" +
+            ".[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "Email format in invalid")
     private String email;
 
     @Size(max = 50)
