@@ -11,12 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -37,12 +39,12 @@ public class ContactController {
 
     @GetMapping(value = "/contacts/search")
     public ResponseEntity<Page<ResponseContactDTO>> getContactsByTheSearchParam(
-            @RequestParam String searchParam,
+            @RequestParam(name = "searchParam")
+            @NotBlank(message = "Please insert 1 non blank character") String searchParam,
             @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(contactService.getContactsBySearchQuery(searchParam,
                 authenticationFacade.getEmailFromLoggedInUser(), pageable,
-                SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
-                        .contains("ROLE_ADMIN")));
+                authenticationFacade.isAdmin()));
     }
 
     @GetMapping("/users/{uuid}/contacts")
@@ -60,7 +62,7 @@ public class ContactController {
 
     @PostMapping("/contacts")
     public ResponseEntity<ResponseContactDTO> save(
-           @Valid @RequestBody RequestContactDTO postRequestContactDTO)
+            @Valid @RequestBody RequestContactDTO postRequestContactDTO)
             throws AccessDeniedException {
         return ResponseEntity.ok(contactService.createOrUpdate(postRequestContactDTO, null,
                 authenticationFacade.getEmailFromLoggedInUser()));
@@ -68,7 +70,7 @@ public class ContactController {
 
     @PutMapping("/contacts/{uuid}")
     public ResponseEntity<ResponseContactDTO> update(
-          @Valid @RequestBody RequestContactDTO postRequestContactDTO, @PathVariable UUID uuid)
+            @Valid @RequestBody RequestContactDTO postRequestContactDTO, @PathVariable UUID uuid)
             throws AccessDeniedException {
         return ResponseEntity.ok(contactService.createOrUpdate(postRequestContactDTO, uuid,
                 authenticationFacade.getEmailFromLoggedInUser()));

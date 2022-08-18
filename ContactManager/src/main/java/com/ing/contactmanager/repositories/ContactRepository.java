@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,7 +28,7 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
             "c.last_name LIKE CONCAT('%', :value, '%') OR c.email LIKE CONCAT('%', :value, '%') " +
             "OR c.phone_number LIKE CONCAT('%', :value, '%'))",
             nativeQuery = true)
-    Page<Contact> userContactsSearch(
+    Page<Contact> searchContactsByUser(
             @Param("value") String value, @Param("userEmail") String userEmail,
             Pageable pageable);
 
@@ -36,6 +38,6 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
             +
             "OR c.phone_number LIKE CONCAT('%', :value, '%')",
             nativeQuery = true)
-    Page<Contact> adminAllContactsSearch(
+    Page<Contact> searchAllContacts(
             @Param("value") String value, Pageable pageable);
 }

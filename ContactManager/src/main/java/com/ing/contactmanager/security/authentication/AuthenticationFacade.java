@@ -6,4 +6,6 @@ public interface AuthenticationFacade {
     User getLoggedInUser();
 
     String getEmailFromLoggedInUser();
+
+    boolean isAdmin();
 }

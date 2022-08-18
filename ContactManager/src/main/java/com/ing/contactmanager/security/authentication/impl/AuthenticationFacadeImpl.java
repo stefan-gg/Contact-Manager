@@ -39,6 +39,11 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
         return getAuthentication().getName();
     }
 
+    public boolean isAdmin() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
+                .contains("ROLE_ADMIN");
+    }
+
     private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }

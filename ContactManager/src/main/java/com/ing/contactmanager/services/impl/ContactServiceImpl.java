@@ -63,7 +63,7 @@ public class ContactServiceImpl {
         if (!isAdmin) {
             return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
                     contactRepository
-                            .userContactsSearch(
+                            .searchContactsByUser(
                                     searchParam,
                                     userEmail,
                                     pageable)
@@ -71,7 +71,7 @@ public class ContactServiceImpl {
 
         } else {
             return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
-                    contactRepository.adminAllContactsSearch(searchParam,
+                    contactRepository.searchAllContacts(searchParam,
                                     pageable)
                             .getContent()));
         }
