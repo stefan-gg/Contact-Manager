@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    image: contact-manager
+    build:
+       context: .
+       dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ContactManager
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - "SPRING_PROFILES_ACTIVE=dev"
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ContactManager
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./log-directory:/var/lib/postgresql/data
