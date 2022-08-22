@@ -1,5 +1,6 @@
 package com.ing.contactmanager.exceptions;
 
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -41,6 +42,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleSQLException(IllegalArgumentException exception) {
 
         return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CsvRequiredFieldEmptyException.class)
+    public ResponseEntity<Object> handleCsvRFEE(CsvRequiredFieldEmptyException ex){
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -92,7 +92,8 @@ public class ContactServiceImpl {
                             "contacts imported: " + contactsImportedSuccessfully);
                     map.put("Errors", errors.toString());
 
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    return contactsImportedSuccessfully > 0 ? ResponseEntity.status(HttpStatus.OK)
+                            .body(map) : ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body(map);
                 } else if (contacts.isEmpty()) {
                     map.put("Message", "No contacts provided in the file.");
@@ -150,12 +151,12 @@ public class ContactServiceImpl {
             throws AccessDeniedException {
 
         ContactType contactType = contactTypeService.getContactType(postRequestContactDTO);
+        Contact contact = new Contact();
 
         if (uuid == null) {
 
             User user = userService.getUserByEmail(userEmail);
 
-            Contact contact = new Contact();
             contact = contactMapper.convertPostContactDTOToContact(postRequestContactDTO, contact);
 
             contact.setUid(UUID.randomUUID());
@@ -167,7 +168,7 @@ public class ContactServiceImpl {
 
         } else {
 
-            Contact contact = getContactByUuid(uuid);
+            contact = getContactByUuid(uuid);
 
             if (contact.getUser().getEmail().equals(userEmail)) {
 

@@ -15,9 +15,9 @@ public class RequestContactDTO {
 
     @Email
     @Size(max = 100)
-    @Pattern(regexp = "^(?=.{1,100}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\" +
+    @Pattern(regexp = "^$|(?=.{1,100}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\" +
             ".[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "Email format in invalid")
-    @CsvBindByName
+    @CsvBindByName()
     private String email;
 
     @Size(max = 50)
