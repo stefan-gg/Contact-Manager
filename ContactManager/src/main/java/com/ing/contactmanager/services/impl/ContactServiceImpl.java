@@ -103,7 +103,9 @@ public class ContactServiceImpl {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body(map);
                 } else {
-                    return ResponseEntity.ok().build();
+                    map.put("Message", "All contacts are successfully saved.");
+
+                    return ResponseEntity.status(HttpStatus.OK).body(map);
                 }
             } catch (Exception ex) {
 
