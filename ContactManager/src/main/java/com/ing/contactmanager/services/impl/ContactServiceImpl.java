@@ -7,17 +7,26 @@ import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.ContactRepository;
 import com.ing.contactmanager.services.mappers.ContactMapper;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +37,8 @@ public class ContactServiceImpl {
     private final ContactRepository contactRepository;
     private final ContactTypeServiceImpl contactTypeService;
     private final ContactMapper contactMapper;
+
+    private final Validator validator;
 
 
     @Transactional(readOnly = true)
@@ -45,9 +56,66 @@ public class ContactServiceImpl {
                 .getContent());
     }
 
+    public ResponseEntity importContactsFromFile(MultipartFile file, String userEmail) {
+        int contactsImportedSuccessfully = 0;
+        int contactsFailedToImport = 0;
+
+        Map<String, String> map = new HashMap<>();
+
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("File is empty");
+        } else {
+            List<Set<ConstraintViolation<Object>>> errors = new ArrayList<>();
+            try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+                CsvToBean<RequestContactDTO> csvToBean = new CsvToBeanBuilder(reader)
+                        .withType(RequestContactDTO.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withIgnoreEmptyLine(true)
+                        .build();
+
+                List<RequestContactDTO> contacts = csvToBean.parse();
+
+                for (RequestContactDTO contactDTO : contacts) {
+                    if (validator.validate(contactDTO).size() != 0) {
+                        contactsFailedToImport++;
+
+                        errors.add(validator.validate(contactDTO));
+                    } else {
+                        createOrUpdate(contactDTO, null, userEmail);
+                        contactsImportedSuccessfully++;
+                    }
+                }
+
+                if (!errors.isEmpty()) {
+
+                    map.put("Message", contactsFailedToImport + " records were incomplete, " +
+                            "contacts imported: " + contactsImportedSuccessfully);
+                    map.put("Errors", errors.toString());
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(map);
+                } else if (contacts.isEmpty()) {
+                    map.put("Message", "No contacts provided in the file.");
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(map);
+                } else {
+                    return ResponseEntity.ok().build();
+                }
+            } catch (Exception ex) {
+
+                map.put("Message",
+                        "File wasn't read. Either the format was incorrect or the file was " +
+                                "corrupt.");
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(map);
+            }
+        }
+    }
+
     @Transactional(readOnly = true)
     public ResponseContactDTO getByUuid(UUID uuid) {
-
 
         Contact contact = contactRepository.findByUid(uuid).orElseThrow(
                 () -> new NoSuchElementException(
@@ -59,7 +127,6 @@ public class ContactServiceImpl {
     @Transactional(readOnly = true)
     public Page<ResponseContactDTO> getContactsBySearchQuery(String searchParam, String userEmail,
                                                              Pageable pageable, boolean isAdmin) {
-
         if (!isAdmin) {
             return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
                     contactRepository
@@ -81,7 +148,6 @@ public class ContactServiceImpl {
     public ResponseContactDTO createOrUpdate(RequestContactDTO postRequestContactDTO, UUID uuid,
                                              String userEmail)
             throws AccessDeniedException {
-
 
         ContactType contactType = contactTypeService.getContactType(postRequestContactDTO);
 

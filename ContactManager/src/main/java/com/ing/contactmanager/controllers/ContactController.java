@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -58,6 +59,12 @@ public class ContactController {
     @GetMapping("/contacts/{uuid}")
     public ResponseEntity<ResponseContactDTO> getById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(contactService.getByUuid(uuid));
+    }
+
+    @PostMapping("/contacts/upload")
+    public ResponseEntity importUserContacts(@Valid @RequestParam("file") MultipartFile file) {
+        return contactService.importContactsFromFile(file,
+                authenticationFacade.getEmailFromLoggedInUser());
     }
 
     @PostMapping("/contacts")
