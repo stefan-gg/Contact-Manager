@@ -65,7 +65,9 @@ public class ContactServiceImpl {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("File is empty");
         } else {
+
             List<Set<ConstraintViolation<Object>>> errors = new ArrayList<>();
+
             try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
                 CsvToBean<RequestContactDTO> csvToBean = new CsvToBeanBuilder(reader)
                         .withType(RequestContactDTO.class)
