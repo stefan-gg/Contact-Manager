@@ -56,6 +56,37 @@ public class ContactServiceImpl {
                 .getContent());
     }
 
+    @Transactional(readOnly = true)
+    public ResponseContactDTO getByUuid(UUID uuid) {
+
+        Contact contact = contactRepository.findByUid(uuid).orElseThrow(
+                () -> new NoSuchElementException(
+                        "Element with UUID : " + uuid.toString() + " does not exist"));
+
+        return contactMapper.convertContactToContactDTO(contact);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ResponseContactDTO> getContactsBySearchQuery(String searchParam, String userEmail,
+                                                             Pageable pageable, boolean isAdmin) {
+        if (!isAdmin) {
+            return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
+                    contactRepository
+                            .searchContactsByUser(
+                                    searchParam,
+                                    userEmail,
+                                    pageable)
+                            .getContent()));
+
+        } else {
+            return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
+                    contactRepository.searchAllContacts(searchParam,
+                                    pageable)
+                            .getContent()));
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity importContactsFromFile(MultipartFile file, String userEmail) {
         int contactsImportedSuccessfully = 0;
         int contactsFailedToImport = 0;
@@ -116,36 +147,6 @@ public class ContactServiceImpl {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(map);
             }
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseContactDTO getByUuid(UUID uuid) {
-
-        Contact contact = contactRepository.findByUid(uuid).orElseThrow(
-                () -> new NoSuchElementException(
-                        "Element with UUID : " + uuid.toString() + " does not exist"));
-
-        return contactMapper.convertContactToContactDTO(contact);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ResponseContactDTO> getContactsBySearchQuery(String searchParam, String userEmail,
-                                                             Pageable pageable, boolean isAdmin) {
-        if (!isAdmin) {
-            return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
-                    contactRepository
-                            .searchContactsByUser(
-                                    searchParam,
-                                    userEmail,
-                                    pageable)
-                            .getContent()));
-
-        } else {
-            return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
-                    contactRepository.searchAllContacts(searchParam,
-                                    pageable)
-                            .getContent()));
         }
     }
 

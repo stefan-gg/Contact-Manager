@@ -67,6 +67,7 @@ public class ContactTypeServiceImpl {
         }
     }
 
+    @Transactional(readOnly = true)
     public ContactType getContactType(RequestContactDTO postRequestContactDTO) {
         return contactTypeRepository.getContactTypeByContactTypeName(
                 postRequestContactDTO.getContactTypeName()).orElseThrow(
