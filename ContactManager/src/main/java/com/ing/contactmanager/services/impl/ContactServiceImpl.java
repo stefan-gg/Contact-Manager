@@ -113,6 +113,8 @@ public class ContactServiceImpl {
                         contactsFailedToImport++;
 
                         errors.add(validator.validate(contactDTO));
+
+                        contacts.remove(contactDTO);
                     } else {
                         createOrUpdate(contactDTO, null, userEmail);
                         contactsImportedSuccessfully++;

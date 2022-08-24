@@ -63,6 +63,7 @@ public class ContactController {
 
     @PostMapping("/contacts/upload")
     public ResponseEntity importUserContacts(@Valid @RequestParam("file") MultipartFile file) {
+//        TODO: implement saveAll() instead of save()
         return contactService.importContactsFromFile(file,
                 authenticationFacade.getEmailFromLoggedInUser());
     }
