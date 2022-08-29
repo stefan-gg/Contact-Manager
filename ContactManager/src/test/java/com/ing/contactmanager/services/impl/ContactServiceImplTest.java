@@ -6,16 +6,13 @@ import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.entities.enums.Role;
 import com.ing.contactmanager.repositories.ContactRepository;
-import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.mappers.ContactMapper;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import lombok.RequiredArgsConstructor;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,94 +24,172 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.testng.annotations.DataProvider;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnit4ClassRunner.class)
-//@ExtendWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @RequiredArgsConstructor
-class ContactServiceImplTest {
+public class ContactServiceImplTest {
     @MockBean(ContactRepository.class)
     private ContactRepository contactRepository;
 
     @Autowired
     private ContactMapper contactMapper;
 
-//    @Mock
-//    private Page<Contact> page = new PageImpl<>(Collections.emptyList());
-
     @Autowired
     @InjectMocks
     private ContactServiceImpl contactService;
 
-    @DataProvider(name = "search-data")
-    public Object[][] getContacts() {
+    @DataProvider(name = "getContacts")
+    public Object[][] getContacts(String caseName) {
+        User user1 = new User(1, UUID.randomUUID(), null, "user1@das.com",
+                "1234", "Ime", "pREZ",
+                Role.ROLE_USER, LocalDateTime.now(), LocalDateTime.now());
 
+        User user2 = new User(2, UUID.randomUUID(), null, "user2@das.com",
+                "1234", "Ime", "pREZ",
+                Role.ROLE_USER, LocalDateTime.now(), LocalDateTime.now());
 
-        return new Object[][]{};
-    }
-
-    @Test
-    void getContactsBySearchQuery() {
-        Pageable pageable = PageRequest.of(0, 10);
-//        Mockito.when(contactRepository.searchContactsByUser(Mockito.any(),
-//                Mockito.any(), Mockito.any())).thenReturn(page);
-
-        List<ResponseContactDTO> contacts = new java.util.ArrayList<>();
-        List<Contact> ct = new ArrayList<>();
-
-        User user = new User();
-        user.setId(1);
-        user.setEmail("ema@das.com");
-        user.setRole(Role.ROLE_USER);
-        user.setPassword("1234");
-        user.setFirstName("Ime");
-        user.setLastName("1234");
+        User user3 = new User(3, UUID.randomUUID(), null, "user3@das.com",
+                "1234", "Ime", "pREZ",
+                Role.ROLE_ADMIN, LocalDateTime.now(), LocalDateTime.now());
 
         ContactType c = new ContactType();
         c.setContactTypeName("friend");
 
-        Contact contact = new Contact();
+        Contact contact1 =
+                new Contact(1, UUID.randomUUID(), "Ime", "Prezime",
+                        null, null, "0120123", "mail@gmail.com",
+                        LocalDateTime.now(), LocalDateTime.now(), user1, c);
 
-        contact.setUser(user);
-        contact.setContactType(c);
-        contact.setFirstName("Ime");
-        contact.setLastName("Ime");
-        contact.setEmail("mail@gmail.com");
-        contact.setPhoneNumber("1233123");
+        Contact contact2 =
+                new Contact(2, UUID.randomUUID(), "Ime", "Prezime",
+                        null, null, "0120123", "mail@gmail.com",
+                        LocalDateTime.now(), LocalDateTime.now(), user1, c);
 
-        ct.add(contact);
+        Contact contact3 =
+                new Contact(3, UUID.randomUUID(), "Im", "Pr",
+                        null, null, "0120123", "mail@gmail.com",
+                        LocalDateTime.now(), LocalDateTime.now(), user1, c);
 
-        contactRepository.save(contact);
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(contact1);
+        contacts.add(contact2);
 
-        contacts.add(contactMapper.convertContactToContactDTO(contact));
+        Pageable pageable = PageRequest.of(0, 10);
 
-        Page<ResponseContactDTO> pageResponse = new PageImpl<>(contacts);
-        Page<Contact> pageContact = new PageImpl<>(ct);
+        switch (caseName) {
+            case "user":
+
+                List<ResponseContactDTO> contactsDTO =
+                        contactMapper.convertContactsToContactsDTO(contacts);
+
+                return new Object[][]{{"me", contacts, pageable, contactsDTO, false}};
+
+            case "admin":
+                contacts.add(contact3);
+
+                contactsDTO =
+                        contactMapper.convertContactsToContactsDTO(contacts);
+
+                return new Object[][]{{"m", contacts, pageable, contactsDTO, true}};
+
+            case "returnEmptyList":
+
+                contactsDTO = Collections.emptyList();
+
+                return new Object[][]{{"me", contacts, pageable, contactsDTO, false}};
+        }
+        return null;
+    }
+
+    @Test
+    @UseDataProvider("getContacts")
+    void getContactsBySearchQuery() {
+
+        Object[][] testParams = getContacts("user");
+        List<Contact> contacts = (List<Contact>) testParams[0][1];
+
+        Pageable pageable = (Pageable) testParams[0][2];
+
+        List<ResponseContactDTO> contactsDTO = (List<ResponseContactDTO>) testParams[0][3];
+
+        Page<ResponseContactDTO> pageResponse = new PageImpl<>(contactsDTO);
+        Page<Contact> pageContact = new PageImpl<>(contacts);
 
         Mockito.when(contactRepository.searchContactsByUser(Mockito.any(), Mockito.any(),
                         Mockito.any()))
-                .thenReturn(pageContact);
+                .thenReturn(Optional.of(pageContact));
 
         Assertions.assertEquals(pageResponse.getSize(), contactService.getContactsBySearchQuery(
-                "Ime",
-                "ema@das.com",
+                (String) testParams[0][0],
+                contacts.get(0).getUser().getEmail(),
                 pageable,
-                false
+                (boolean) testParams[0][4]
         ).getSize());
     }
 
-//    @Test
-//    void createOrUpdate() {
-//    }
-//
-//    @Test
-//    void getContactsForUser() {
-//    }
-//
-//    @Test
-//    void importContactsFromFile() {
-//    }
+    @Test
+    @UseDataProvider("getContacts")
+    void getContactsBySearchQueryAsAdmin() {
+
+        Object[][] testParams = getContacts("admin");
+        List<Contact> contacts = (List<Contact>) testParams[0][1];
+
+
+        Pageable pageable = (Pageable) testParams[0][2];
+
+        List<ResponseContactDTO> contactsDTO = (List<ResponseContactDTO>) testParams[0][3];
+
+        Page<ResponseContactDTO> pageResponse = new PageImpl<>(contactsDTO);
+
+        Page<Contact> pageContact = new PageImpl<>(contacts);
+
+        Mockito.when(contactRepository.searchAllContacts(Mockito.any(), Mockito.any()))
+                .thenReturn(Optional.of(pageContact));
+
+        Assertions.assertEquals(pageResponse.getSize(), contactService.getContactsBySearchQuery(
+                (String) testParams[0][0],
+                null,
+                pageable,
+                (boolean) testParams[0][4]
+        ).getSize());
+    }
+
+    @Test
+    @UseDataProvider("getContacts")
+    void getEmptyListBySearchQuery() {
+
+        NoSuchElementException thrown =
+                Assertions.assertThrows(NoSuchElementException.class, () -> {
+
+                    Object[][] testParams = getContacts("returnEmptyList");
+                    List<Contact> contacts = (List<Contact>) testParams[0][1];
+
+
+                    Pageable pageable = (Pageable) testParams[0][2];
+
+                    List<ResponseContactDTO> contactsDTO =
+                            (List<ResponseContactDTO>) testParams[0][3];
+
+                    Page<ResponseContactDTO> pageResponse = new PageImpl<>(contactsDTO);
+
+                    Page<Contact> pageContact = new PageImpl<>(contacts);
+
+                    Mockito.when(contactRepository.searchAllContacts(Mockito.any(), Mockito.any()))
+                            .thenReturn(Optional.of(pageContact));
+
+                    Assertions.assertEquals(pageResponse.getSize(),
+                            contactService.getContactsBySearchQuery(
+                                    (String) testParams[0][0],
+                                    contacts.get(0).getUser().getEmail(),
+                                    pageable,
+                                    (boolean) testParams[0][4]
+                            ).getSize());
+                });
+
+        Assertions.assertEquals("There are no results that matched your search param: me.",
+                thrown.getMessage());
+    }
 }

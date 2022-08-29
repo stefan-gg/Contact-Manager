@@ -75,13 +75,17 @@ public class ContactServiceImpl {
                             .searchContactsByUser(
                                     searchParam,
                                     userEmail,
-                                    pageable)
+                                    pageable).orElseThrow(() -> new NoSuchElementException(
+                                    "There are no results that matched your search param: "
+                                            + searchParam + "."))
                             .getContent()));
 
         } else {
             return new PageImpl<>(contactMapper.convertContactsToContactsDTO(
                     contactRepository.searchAllContacts(searchParam,
-                                    pageable)
+                                    pageable).orElseThrow(() -> new NoSuchElementException(
+                                    "There are no results that matched your search param: "
+                                            + searchParam + "."))
                             .getContent()));
         }
     }
