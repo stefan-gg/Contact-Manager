@@ -23,6 +23,8 @@ public class UserServiceImpl {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    private final MailServiceImpl mailService;
+
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUuid(UUID uuid) {
         userRepository.deleteByUid(uuid);
@@ -43,6 +45,10 @@ public class UserServiceImpl {
             User user = userMapper.convertPostUserDTOToUser(requestUserDTO);
             user.setUid(UUID.randomUUID());
             userRepository.save(user);
+
+            mailService.sendConfirmationEmail(user.getEmail(), "Confirmation email",
+                    "Your account has been created successfully !\n" +
+                            "Welcome " + user.getFirstName() + " !");
 
             return userMapper.convertToUserDTO(user);
 
