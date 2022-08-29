@@ -27,13 +27,13 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
             " LIKE :userEmail AND CONCAT(TRIM(c.email), TRIM(c.first_name), TRIM(c.last_name), " +
             "TRIM(c.phone_number)) LIKE CONCAT('%', :value, '%')",
             nativeQuery = true)
-    Optional<Page<Contact>> searchContactsByUser(
+    Page<Contact> searchContactsByUser(
             @Param("value") String value, @Param("userEmail") String userEmail,
             Pageable pageable);
 
     @Query(value = "SELECT * FROM contacts c WHERE CONCAT(TRIM(c.email), TRIM(c.first_name), TRIM" +
             "(c.last_name), TRIM(c.phone_number)) LIKE CONCAT('%', :value, '%')",
             nativeQuery = true)
-    Optional<Page<Contact>> searchAllContacts(
+    Page<Contact> searchAllContacts(
             @Param("value") String value, Pageable pageable);
 }

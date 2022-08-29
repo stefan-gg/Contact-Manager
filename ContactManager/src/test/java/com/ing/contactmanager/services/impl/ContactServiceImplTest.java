@@ -25,7 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.testng.annotations.DataProvider;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -46,14 +49,6 @@ public class ContactServiceImplTest {
         User user1 = new User(1, UUID.randomUUID(), null, "user1@das.com",
                 "1234", "Ime", "pREZ",
                 Role.ROLE_USER, LocalDateTime.now(), LocalDateTime.now());
-
-        User user2 = new User(2, UUID.randomUUID(), null, "user2@das.com",
-                "1234", "Ime", "pREZ",
-                Role.ROLE_USER, LocalDateTime.now(), LocalDateTime.now());
-
-        User user3 = new User(3, UUID.randomUUID(), null, "user3@das.com",
-                "1234", "Ime", "pREZ",
-                Role.ROLE_ADMIN, LocalDateTime.now(), LocalDateTime.now());
 
         ContactType c = new ContactType();
         c.setContactTypeName("friend");
@@ -120,7 +115,7 @@ public class ContactServiceImplTest {
 
         Mockito.when(contactRepository.searchContactsByUser(Mockito.any(), Mockito.any(),
                         Mockito.any()))
-                .thenReturn(Optional.of(pageContact));
+                .thenReturn(pageContact);
 
         Assertions.assertEquals(pageResponse.getSize(), contactService.getContactsBySearchQuery(
                 (String) testParams[0][0],
@@ -147,7 +142,7 @@ public class ContactServiceImplTest {
         Page<Contact> pageContact = new PageImpl<>(contacts);
 
         Mockito.when(contactRepository.searchAllContacts(Mockito.any(), Mockito.any()))
-                .thenReturn(Optional.of(pageContact));
+                .thenReturn(pageContact);
 
         Assertions.assertEquals(pageResponse.getSize(), contactService.getContactsBySearchQuery(
                 (String) testParams[0][0],
@@ -161,8 +156,8 @@ public class ContactServiceImplTest {
     @UseDataProvider("getContacts")
     void getEmptyListBySearchQuery() {
 
-        NoSuchElementException thrown =
-                Assertions.assertThrows(NoSuchElementException.class, () -> {
+        NullPointerException thrown =
+                Assertions.assertThrows(NullPointerException.class, () -> {
 
                     Object[][] testParams = getContacts("returnEmptyList");
                     List<Contact> contacts = (List<Contact>) testParams[0][1];
@@ -178,7 +173,7 @@ public class ContactServiceImplTest {
                     Page<Contact> pageContact = new PageImpl<>(contacts);
 
                     Mockito.when(contactRepository.searchAllContacts(Mockito.any(), Mockito.any()))
-                            .thenReturn(Optional.of(pageContact));
+                            .thenReturn(pageContact);
 
                     Assertions.assertEquals(pageResponse.getSize(),
                             contactService.getContactsBySearchQuery(
@@ -189,7 +184,10 @@ public class ContactServiceImplTest {
                             ).getSize());
                 });
 
-        Assertions.assertEquals("There are no results that matched your search param: me.",
+        Assertions.assertEquals("Cannot invoke \"org.springframework.data.domain.Page.getContent" +
+                        "()\" because the return value of \"com.ing.contactmanager.repositories" +
+                        ".ContactRepository.searchContactsByUser(String, String, org" +
+                        ".springframework.data.domain.Pageable)\" is null",
                 thrown.getMessage());
     }
 }
