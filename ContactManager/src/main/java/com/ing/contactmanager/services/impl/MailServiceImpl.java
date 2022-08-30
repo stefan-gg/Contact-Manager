@@ -28,11 +28,7 @@ public class MailServiceImpl {
     @Async
     public void sendConfirmationEmail(String to, String firstName, String lastName)
             throws IOException, TemplateException, MessagingException {
-//        SimpleMailMessage mailMessage = new SimpleMailMessage();
-//        mailMessage.setFrom("zvonkobodanovic@outlook.com");
-//        mailMessage.setTo(to);
-//        mailMessage.setSubject(subject);
-//        mailMessage.setText(text);
+
         Map<String, Object> data = new HashMap<>();
         data.put("firstName", firstName);
         data.put("lastName", lastName);
