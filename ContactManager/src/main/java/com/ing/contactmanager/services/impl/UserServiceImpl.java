@@ -5,6 +5,7 @@ import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.mappers.UserMapper;
+import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -46,9 +49,16 @@ public class UserServiceImpl {
             user.setUid(UUID.randomUUID());
             userRepository.save(user);
 
-            mailService.sendConfirmationEmail(user.getEmail(), "Confirmation email",
-                    "Your account has been created successfully !\n" +
-                            "Welcome " + user.getFirstName() + " !");
+            try {
+                mailService.sendConfirmationEmail(user.getEmail(),
+                        user.getFirstName(), user.getLastName());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (TemplateException e) {
+                throw new RuntimeException(e);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
 
             return userMapper.convertToUserDTO(user);
 
