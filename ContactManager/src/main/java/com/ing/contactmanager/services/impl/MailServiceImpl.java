@@ -19,11 +19,14 @@ import java.util.Map;
 @Service
 public class MailServiceImpl {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Autowired
-    private Configuration freemarkerConfig;
+    private final Configuration freemarkerConfig;
+
+    public MailServiceImpl(JavaMailSender javaMailSender, Configuration freemarkerConfig) {
+        this.javaMailSender = javaMailSender;
+        this.freemarkerConfig = freemarkerConfig;
+    }
 
     @Async
     public void sendConfirmationEmail(String to, String firstName, String lastName)
