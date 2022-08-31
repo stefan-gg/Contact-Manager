@@ -2,10 +2,12 @@ package com.ing.contactmanager.repositories;
 
 import com.ing.contactmanager.entities.ContactType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public interface ContactTypeRepository extends JpaRepository<ContactType, Integer> {
 
     Optional<ContactType> findByUid(UUID uuid);

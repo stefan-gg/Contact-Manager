@@ -2,6 +2,7 @@ package com.ing.contactmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ing.contactmanager.entities.enums.Role;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
