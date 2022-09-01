@@ -1,7 +1,7 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
+import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
 import com.ing.contactmanager.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,14 +31,12 @@ public class UserController {
     public ResponseEntity<ResponseUserDTO> getById(@PathVariable UUID uuid) {
 
         return ResponseEntity.ok(userServiceImpl.getByUuid(uuid));
-
     }
 
     @PostMapping
     public ResponseEntity<ResponseUserDTO> save(@Valid @RequestBody RequestUserDTO requestUserDTO) {
 
         return ResponseEntity.ok(userServiceImpl.createOrUpdate(requestUserDTO, null));
-
     }
 
     @PutMapping("/{uuid}")

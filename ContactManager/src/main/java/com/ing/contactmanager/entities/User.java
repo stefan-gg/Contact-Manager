@@ -2,6 +2,7 @@ package com.ing.contactmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ing.contactmanager.entities.enums.Role;
+import com.ing.contactmanager.entities.enums.VerificationStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
 
     @Column(name = "uid", updatable = false)
     private UUID uid;
@@ -53,11 +53,17 @@ public class User {
     @Column(name = "role", nullable = false, length = 20)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "verification_status", nullable = false, length = 20)
+    private VerificationStatus verificationStatus;
+
+    @Size(max = 50, message = "Phone number length cannot be greater than 50")
+    @Column(name = "phone_number", length = 50)
+    private String phoneNumber;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
-
 
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp

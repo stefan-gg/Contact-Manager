@@ -11,6 +11,7 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class SecurityUserDetails implements UserDetails {
+    public static final String VERIFIED = "VERIFIED";
     private final User user;
 
     @Override
@@ -45,6 +46,6 @@ public class SecurityUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getVerificationStatus().toString().equals(VERIFIED);
     }
 }

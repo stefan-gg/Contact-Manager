@@ -1,8 +1,9 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
+import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
 import com.ing.contactmanager.entities.User;
+import com.ing.contactmanager.entities.enums.VerificationStatus;
 import com.ing.contactmanager.repositories.UserRepository;
 import com.ing.contactmanager.services.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +37,25 @@ public class UserServiceImpl {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public ResponseUserDTO userSelfUpdate(RequestUserDTO requestUserDTO, String email) {
+
+        User user = getUserByEmail(email);
+        User updatedUser = userMapper.convertPostUserDTOToUser(requestUserDTO);
+        updatedUser.setId(user.getId());
+        updatedUser.setEmail(email);
+        userRepository.save(updatedUser);
+
+        return userMapper.convertToUserDTO(updatedUser);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public ResponseUserDTO createOrUpdate(RequestUserDTO requestUserDTO, UUID uuid) {
 
         if (uuid == null) {
 
             User user = userMapper.convertPostUserDTOToUser(requestUserDTO);
             user.setUid(UUID.randomUUID());
+            user.setVerificationStatus(VerificationStatus.UNVERIFIED);
             userRepository.save(user);
 
             return userMapper.convertToUserDTO(user);
@@ -51,7 +65,7 @@ public class UserServiceImpl {
             User user = getUserByUuid(uuid);
             User updatedUser = userMapper.convertPostUserDTOToUser(requestUserDTO);
             updatedUser.setId(user.getId());
-            userRepository.save(updatedUser);
+            updateUser(updatedUser);
 
             return userMapper.convertToUserDTO(updatedUser);
         }
@@ -68,6 +82,10 @@ public class UserServiceImpl {
         return userRepository.getUserByEmail(userEmail).orElseThrow(
                 () -> new NoSuchElementException(
                         "User with email : " + userEmail + " does not exist"));
+    }
+
+    public void updateUser(User updatedUser) {
+        userRepository.save(updatedUser);
     }
 
     private User getUserByUuid(UUID uuid) {

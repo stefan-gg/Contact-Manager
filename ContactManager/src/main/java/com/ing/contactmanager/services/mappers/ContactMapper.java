@@ -1,7 +1,7 @@
 package com.ing.contactmanager.services.mappers;
 
-import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
-import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.entities.Contact;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

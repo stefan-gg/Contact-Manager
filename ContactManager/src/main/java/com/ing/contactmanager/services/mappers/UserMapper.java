@@ -1,7 +1,7 @@
 package com.ing.contactmanager.services.mappers;
 
-import com.ing.contactmanager.dtos.request.user.RequestUserDTO;
-import com.ing.contactmanager.dtos.response.user.ResponseUserDTO;
+import com.ing.contactmanager.controllers.dtos.request.user.RequestUserDTO;
+import com.ing.contactmanager.controllers.dtos.response.user.ResponseUserDTO;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.entities.enums.Role;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,8 @@ public class UserMapper {
         responseUserDTO.setCreatedAt(user.getCreatedAt());
         responseUserDTO.setUpdatedAt(user.getUpdatedAt());
         responseUserDTO.setRole(user.getRole().toString());
+        responseUserDTO.setPhoneNumber(user.getPhoneNumber());
+        responseUserDTO.setVerificationStatus(user.getVerificationStatus());
 
         return responseUserDTO;
     }
@@ -47,6 +49,8 @@ public class UserMapper {
         user.setFirstName(requestUserDTO.getFirstName());
         user.setLastName(requestUserDTO.getLastName());
         user.setRole(Role.valueOf(requestUserDTO.getRole()));
+        user.setVerificationStatus(requestUserDTO.getVerificationStatus());
+        user.setPhoneNumber(requestUserDTO.getPhoneNumber());
 
         return user;
     }

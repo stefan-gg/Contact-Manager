@@ -1,8 +1,8 @@
 package com.ing.contactmanager.services.impl;
 
-import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
-import com.ing.contactmanager.dtos.request.contactType.RequestContactTypeDTO;
-import com.ing.contactmanager.dtos.response.contactType.ResponseContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.controllers.dtos.request.contactType.RequestContactTypeDTO;
+import com.ing.contactmanager.controllers.dtos.response.contactType.ResponseContactTypeDTO;
 import com.ing.contactmanager.entities.ContactType;
 import com.ing.contactmanager.repositories.ContactTypeRepository;
 import com.ing.contactmanager.services.mappers.ContactTypeMapper;

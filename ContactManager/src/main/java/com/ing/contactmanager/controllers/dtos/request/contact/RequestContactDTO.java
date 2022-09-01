@@ -1,4 +1,4 @@
-package com.ing.contactmanager.dtos.request.contact;
+package com.ing.contactmanager.controllers.dtos.request.contact;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.Getter;
@@ -40,6 +40,7 @@ public class RequestContactDTO {
 
     @NotBlank()
     @Size(max = 50)
+    @Pattern(regexp = "/^\\+?[1-9][0-9]{7,14}$/")
     @CsvBindByName(required = true)
     private String phoneNumber;
 

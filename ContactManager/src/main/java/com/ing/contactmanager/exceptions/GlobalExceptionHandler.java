@@ -1,6 +1,7 @@
 package com.ing.contactmanager.exceptions;
 
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.twilio.exception.ApiException;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,5 +54,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleRuntimeException(RuntimeException exception) {
 
         return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<Object> handleApiException(ApiException apiException){
+        return ResponseEntity.badRequest().body(apiException.getMessage());
     }
 }

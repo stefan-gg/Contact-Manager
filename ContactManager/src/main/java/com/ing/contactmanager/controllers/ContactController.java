@@ -1,7 +1,7 @@
 package com.ing.contactmanager.controllers;
 
-import com.ing.contactmanager.dtos.request.contact.RequestContactDTO;
-import com.ing.contactmanager.dtos.response.contact.ResponseContactDTO;
+import com.ing.contactmanager.controllers.dtos.request.contact.RequestContactDTO;
+import com.ing.contactmanager.controllers.dtos.response.contact.ResponseContactDTO;
 import com.ing.contactmanager.entities.User;
 import com.ing.contactmanager.security.authentication.AuthenticationFacade;
 import com.ing.contactmanager.services.impl.ContactServiceImpl;

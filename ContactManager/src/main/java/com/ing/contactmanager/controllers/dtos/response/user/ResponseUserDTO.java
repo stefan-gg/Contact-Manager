@@ -1,5 +1,6 @@
-package com.ing.contactmanager.dtos.response.user;
+package com.ing.contactmanager.controllers.dtos.response.user;
 
+import com.ing.contactmanager.entities.enums.VerificationStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,4 +24,8 @@ public class ResponseUserDTO {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private VerificationStatus verificationStatus;
+
+    private String phoneNumber;
 }
